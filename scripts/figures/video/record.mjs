@@ -20,18 +20,18 @@ async function stats() {
   return (await r.json()).stats;
 }
 
-// A small honest caption, pinned top-right: what this is and which live slot it shows.
+// A small honest caption in the empty header strip: what this is and which live slots it shows.
 async function caption(page, startSlot) {
   await page.evaluate((s0) => {
     const el = document.createElement("div");
     el.id = "rec-caption";
-    el.style.cssText = "position:fixed;right:16px;bottom:16px;z-index:99;padding:8px 12px;border-radius:8px;"
-      + "font:500 13px/18px Geist,system-ui,sans-serif;color:#fff;background:rgba(20,24,40,.82)";
+    el.style.cssText = "position:fixed;top:27px;left:50%;transform:translateX(-50%);z-index:99;padding:6px 12px;"
+      + "border-radius:8px;font:500 12px/16px Geist,system-ui,sans-serif;color:#fff;background:rgba(20,24,40,.85)";
     document.body.appendChild(el);
     const tick = async () => {
       const st = (await (await fetch("api/snapshot?parts=stats")).json()).stats;
-      el.textContent = `Live dry run, Solana mainnet, slots ${s0.toLocaleString()} to ${st.slot.toLocaleString()}`
-        + ` | ${st.swaps.toLocaleString()} swaps scored | analysis only, nothing traded`;
+      el.textContent = `Live dry run, Solana mainnet, slots ${s0.toLocaleString()}-${st.slot.toLocaleString()},`
+        + ` ${st.swaps.toLocaleString()} swaps, nothing traded`;
     };
     tick();
     setInterval(tick, 1000);

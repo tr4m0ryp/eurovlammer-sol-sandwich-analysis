@@ -44,7 +44,7 @@ function walletStats() {
   $("#wallet-stats").innerHTML = [
     stat("Wallet balance", sol4(W.wallet) + " SOL", "free capital"),
     stat("Total locked", sol4(W.total_locked) + " SOL", "Σ κ of active positions"),
-    stat("Total profit", signed(W.total_profit) + " SOL", "realized (25% of π, minus tips)"),
+    stat("Total profit", signed(W.total_profit) + " SOL", "simulated (captured share of π, minus tips)"),
     stat("Wins", fmt.int(W.n_wins), `race loss ${W.n_race_loss} · no CP ${W.n_no_counterparty}`),
     stat("Active positions", fmt.int(W.n_active), "currently locked"),
     stat("Completed", fmt.int(W.n_completed), `${W.n_sandwiched} of ${W.n_completed} actually sandwiched`),
