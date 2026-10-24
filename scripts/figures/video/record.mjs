@@ -57,7 +57,8 @@ async function scenes(page) {
   const settled = end.settled_flags || 0;
   await page.setContent(cardHtml({
     title: "This recording, measured",
-    sub: `${fmtInt(end.slots)} slots followed live, slots ${fmtInt(start.slot)} to ${fmtInt(end.slot)} (${new Date().toISOString().slice(0, 16).replace("T", " ")} UTC)`,
+    sub: `Whole run: ${fmtInt(end.slots)} slots followed live, up to slot ${fmtInt(end.slot)}. This video: slots`
+      + ` ${fmtInt(start.slot)} to ${fmtInt(end.slot)} (${new Date().toISOString().slice(0, 16).replace("T", " ")} UTC)`,
     stats: [
       [fmtInt(end.swaps), "swaps decoded and scored"],
       [fmtInt(end.sandwiches), "real sandwiches detected"],
