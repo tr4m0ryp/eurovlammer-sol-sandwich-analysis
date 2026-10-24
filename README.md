@@ -1,9 +1,5 @@
 # trenches-sol: Who Gets Sandwiched on Solana
 
-<a href="docs/research/figures/readme/platform.mp4"><img src="docs/research/figures/readme/platform-preview.gif" width="100%" alt="One-minute recording of the live screener on Solana mainnet: strict targets, filters and the simulated wallet"></a>
-
-<sub>Live dry run on Solana mainnet, 2026-10-24 20:08-20:09 UTC, slots 460,980,857 to 460,981,102, inside a 5,193-slot run that scored 190,375 real swaps and detected 512 real sandwiches. Real data only; nothing is signed or sent. Click for the full MP4.</sub>
-
 ## Why this exists
 
 This is the measurement instrument behind my bachelor thesis (Computer
