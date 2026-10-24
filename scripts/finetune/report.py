@@ -16,10 +16,10 @@ import statistics
 from scripts.finetune import sweep
 from scripts.finetune.backtest import build_replay, load_strict, run, run_expected, split_replay
 from scripts.finetune.sweep import REFERENCE
-from sol_mev.config import ROOT
+from sol_mev.config import REPO, ROOT
 
 OUT = ROOT / "data" / "exports" / "finetune"
-REPORT = ROOT / "docs" / "research" / "finetune-report.md"
+REPORT = REPO / "docs" / "research" / "finetune-report.md"
 
 WIN_RATES = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
 CAPTURES = {"size-dependent (0.19/0.6)": None, "0.19": 0.19, "0.25": 0.25, "0.40": 0.40, "0.60": 0.60}

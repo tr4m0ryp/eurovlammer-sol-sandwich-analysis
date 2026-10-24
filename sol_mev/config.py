@@ -4,7 +4,8 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
-ROOT = Path(os.environ.get("TSOL_ROOT", Path(__file__).resolve().parents[1]))
+REPO = Path(__file__).resolve().parents[1]        # this checkout: docs, figures, reports are written here
+ROOT = Path(os.environ.get("TSOL_ROOT", REPO))   # data root: point it at a checkout that holds data/
 DATA_DIR = ROOT / "data"
 
 # Live run defaults; ``python3 . live --config FILE.toml`` overrides them with the same shape.

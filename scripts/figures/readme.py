@@ -16,9 +16,9 @@ import numpy as np
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
 
-from sol_mev.config import DATA_DIR, ROOT  # noqa: E402
+from sol_mev.config import DATA_DIR, REPO  # noqa: E402
 
-OUT = ROOT / "docs" / "research" / "figures" / "readme"
+OUT = REPO / "docs" / "research" / "figures" / "readme"
 THEMES = {"light": {"bg": "#ffffff", "fg": "#1f2328", "grid": "#d0d7de", "line": "#3b5bdb", "ref": "#8c959f"},
           "dark": {"bg": "#0d1117", "fg": "#e6edf3", "grid": "#30363d", "line": "#74a0ff", "ref": "#6e7681"}}
 PHI_EDGES = [0, 0.01, 0.03, 0.1, 0.3, 1, 3, 10, 1e12]
