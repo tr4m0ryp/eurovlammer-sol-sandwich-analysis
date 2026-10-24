@@ -28,22 +28,22 @@ userdata() {  # worker W pulls [S, E)
   cat <<EOF
 #!/bin/bash
 shutdown -h +$DEADLINE_MIN
-exec > /var/log/tl-worker.log 2>&1
+exec > /var/log/tsol-worker.log 2>&1
 set -x
 B=s3://$BUCKET/trenches-sol/$run
 export DEBIAN_FRONTEND=noninteractive HOME=/root
 apt-get update -qq && apt-get install -y -qq python3-venv python3-pip
 python3 -m venv /v && /v/bin/pip install -q awscli aiohttp orjson base58 pandas pyarrow duckdb numpy
 mkdir -p /w && cd /w && /v/bin/aws s3 cp \$B/code.tgz . && tar xzf code.tgz
-( while sleep 60; do /v/bin/aws s3 cp /var/log/tl-worker.log \$B/logs/worker_$w.log --quiet
+( while sleep 60; do /v/bin/aws s3 cp /var/log/tsol-worker.log \$B/logs/worker_$w.log --quiet
   /v/bin/aws s3 sync /w/raw \$B/raw/ --exclude '*.tmp' --quiet; done ) &   # chunks survive a spot loss
-TL_RPC_SPECS="https://solana-rpc.publicnode.com=$RPS" /v/bin/python -m research.sandwich.pull --start $s --end $e --out /w/raw
+TSOL_RPC_SPECS="https://solana-rpc.publicnode.com=$RPS" /v/bin/python -m research.sandwich.pull --start $s --end $e --out /w/raw
 /v/bin/python -m research.sandwich.scan --raw /w/raw --out /w/swaps --workers 3
 /v/bin/aws s3 sync /w/raw \$B/raw/ --quiet
 /v/bin/aws s3 sync /w/swaps \$B/swaps/ --quiet
 ls /w/raw | wc -l > /w/n_chunks
 /v/bin/aws s3 cp /w/n_chunks \$B/done/worker_$w
-/v/bin/aws s3 cp /var/log/tl-worker.log \$B/logs/worker_$w.log --quiet
+/v/bin/aws s3 cp /var/log/tsol-worker.log \$B/logs/worker_$w.log --quiet
 shutdown -h now
 EOF
 }
@@ -52,13 +52,13 @@ launch() {
   local run=$1 start=$2 end=$3 n=$4 w0=${5:-0}
   session
   local per=$(( ((end - start) / n + 199) / 200 * 200 ))
-  tar czf /tmp/tl_code_$run.tgz -C "$R" --exclude=__pycache__ tsol research
-  aws s3 cp /tmp/tl_code_$run.tgz s3://$BUCKET/trenches-sol/$run/code.tgz --quiet
+  tar czf /tmp/tsol_code_$run.tgz -C "$R" --exclude=__pycache__ tsol research
+  aws s3 cp /tmp/tsol_code_$run.tgz s3://$BUCKET/trenches-sol/$run/code.tgz --quiet
   local ami sg subnets
   ami=$(aws ssm get-parameter --name /aws/service/canonical/ubuntu/server/24.04/stable/current/amd64/hvm/ebs-gp3/ami-id --query Parameter.Value --output text)
   sg=$(aws ec2 describe-security-groups --group-names trenches-train-ssh --query 'SecurityGroups[0].GroupId' --output text)
   subnets=($(aws ec2 describe-subnets --filters Name=default-for-az,Values=true --query 'Subnets[].SubnetId' --output text))
-  local tags="[{Key=project,Value=trenches-sol},{Key=run,Value=$run},{Key=Name,Value=tl-$run}]"
+  local tags="[{Key=project,Value=trenches-sol},{Key=run,Value=$run},{Key=Name,Value=tsol-$run}]"
   mkdir -p "$R/logs/$run"
   for i in $(seq 0 $((n - 1))); do
     local w=$((w0 + i)) s=$((start + i * per)) e=$((start + (i + 1) * per)); [ $e -gt "$end" ] && e=$end
