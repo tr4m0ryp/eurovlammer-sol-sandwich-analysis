@@ -30,7 +30,7 @@ import pandas as pd
 from sol_mev.config import ROOT
 from sol_mev.measure.exposure.mesp import exposure
 from sol_mev.onchain.decode.swaps.model import Swap
-from sol_mev.strategy.allocator import Allocator
+from sol_mev.strategy import Allocator
 
 DB = ROOT / "data" / "screener.duckdb"
 CACHE = ROOT / "data" / "exports" / "strict_replay.parquet"
@@ -123,6 +123,7 @@ def build_replay(df: pd.DataFrame) -> dict:
                for r in rows if r["sandwiched"]}
     return {"slots": slots, "victims": victims, "n": len(rows)}
 
+
 def run_mc(replay: dict, params: dict, seeds: int = 5) -> dict:
     """Mean of ``run`` over seeds: the honest expected P&L (no lucky-draw bias)."""
     rows = [run(replay, params, seed=s) for s in range(seeds)]
@@ -171,9 +172,8 @@ def _risk_ok(r: dict, p: dict) -> bool:
     return True
 
 
-def run(replay: dict, params: dict, seed: int = 0) -> dict:
-    """Replay the strict stream through risk gates + ``Allocator``; return the metrics."""
-    alloc = Allocator(initial_sol=0.5, budget_sol=0.5, seed=seed)
+def _replay(alloc: Allocator, replay: dict, params: dict) -> float:
+    """Configure ``alloc`` from ``params``, replay the risk-gated stream through it; return max drawdown."""
     alloc.HISTORY_MAX = 10 ** 9                    # keep every gain for the Sharpe denominator
     for k, v in params.items():
         if k in ("MAX_SLIPPAGE_FRAC", "MIN_COUNTERPARTY_P", "MAX_PRIORITY_FEE"):
@@ -193,84 +193,48 @@ def run(replay: dict, params: dict, seed: int = 0) -> dict:
         equity = alloc.wallet_sol() + alloc._sol(alloc.total_locked)
         peak = max(peak, equity)
         max_dd = max(max_dd, (peak - equity) / 0.5)
-    gains = [h["gain"] / 1e9 for h in alloc.history]
-    n = len(gains)
-    mean = sum(gains) / n if n else 0.0
-    var = sum((g - mean) ** 2 for g in gains) / n if n else 0.0
-    sharpe = mean / (var ** 0.5) if var > 0 else 0.0
-    s = alloc.state()
-    raced = alloc.n_wins + alloc.n_race_loss
-    return {
-        "commits": alloc.n_committed, "wins": alloc.n_wins, "race_loss": alloc.n_race_loss,
-        "no_cp": alloc.n_no_counterparty, "sandwiched": alloc.n_sandwiched, "completed": alloc.n_completed,
-        "total_profit_sol": s["total_profit"], "max_drawdown": max_dd, "sharpe": sharpe,
-        "win_rate": alloc.n_wins / raced if raced else 0.0,
-    }
+    return max_dd
 
 
-class ExpectedAllocator(Allocator):
-    """Same decisions, but resolution uses the win/loss *expectation* instead of an RNG draw.
-
-    Lets the sweep evaluate any WIN_RATE / CAPTURE / TIP deterministically (no Monte-Carlo noise):
-    a sandwiched position contributes ``WIN_RATE * (capture*pi - tip) + (1-WIN_RATE) * (-tip)``.
-    """
-
-    def _resolve(self, slot: int, events: list[dict]) -> None:
-        due = [k for k, p in self.active.items() if p["unlock_slot"] <= slot]
-        for key in due:
-            pos = self.active.pop(key)
-            pool = pos["pool"]
-            self.active_pools[pool] -= 1
-            if self.active_pools[pool] <= 0:
-                del self.active_pools[pool]
-            hit = self.victims.get(pos["key"])
-            if hit is not None:
-                self.n_sandwiched += 1
-                self.sum_realized += hit[2]
-                realized = int(pos["pi"] * self._capture_fraction(pos["pi"]))
-                win_gain = max(0, realized - self.TIP_LAMPORTS)
-                loss_gain = -self.TIP_LAMPORTS
-                self.n_wins += self.WIN_RATE            # fractional: expectation, kept for the table
-                self.n_race_loss += (1.0 - self.WIN_RATE)
-                self._last_expected_gain = self.WIN_RATE * win_gain + (1.0 - self.WIN_RATE) * loss_gain
-                gain = int(round(self._last_expected_gain))
-            else:
-                gain = -int(pos["kappa"] * self.ADVERSE)
-            self.wallet += pos["kappa"] + gain
-            self.total_locked -= pos["kappa"]
-            self.total_profit += gain
-            self.n_completed += 1
-            self.n_no_counterparty += not hit
-
-
-def run_expected(replay: dict, params: dict, seed: int = 0) -> dict:
-    """Deterministic expected-P&L replay (no RNG). Returns the same metric keys as ``run``."""
-    alloc = ExpectedAllocator(initial_sol=0.5, budget_sol=0.5, seed=seed)
-    alloc.HISTORY_MAX = 10 ** 9
-    for k, v in params.items():
-        if k in ("MAX_SLIPPAGE_FRAC", "MIN_COUNTERPARTY_P", "MAX_PRIORITY_FEE"):
-            continue
-        if k == "CAPTURE_FRACTION" and v is not None:
-            cf = float(v)
-            alloc._capture_fraction = lambda pi: cf
-        else:
-            setattr(alloc, k, v)
-    alloc.set_victims(replay["victims"])
-    peak = 0.5
-    max_dd = 0.0
-    for slot, rows in replay["slots"]:
-        kept = [r for r in rows if _risk_ok(r, params)]
-        if kept:
-            alloc.step(int(slot), kept)
-        equity = alloc.wallet_sol() + alloc._sol(alloc.total_locked)
-        peak = max(peak, equity)
-        max_dd = max(max_dd, (peak - equity) / 0.5)
+def _metrics(alloc: Allocator, max_dd: float) -> dict:
     s = alloc.state()
     raced = alloc.n_wins + alloc.n_race_loss
     return {"commits": alloc.n_committed, "wins": alloc.n_wins, "race_loss": alloc.n_race_loss,
             "no_cp": alloc.n_no_counterparty, "sandwiched": alloc.n_sandwiched, "completed": alloc.n_completed,
             "total_profit_sol": s["total_profit"], "max_drawdown": max_dd, "wallet": s["wallet"],
             "win_rate": alloc.n_wins / raced if raced else 0.0}
+
+
+def run(replay: dict, params: dict, seed: int = 0) -> dict:
+    """Replay the strict stream through risk gates + ``Allocator``; return the metrics."""
+    alloc = Allocator(initial_sol=0.5, budget_sol=0.5, seed=seed)
+    out = _metrics(alloc, _replay(alloc, replay, params))
+    gains = [h["gain"] / 1e9 for h in alloc.history]
+    n = len(gains)
+    mean = sum(gains) / n if n else 0.0
+    var = sum((g - mean) ** 2 for g in gains) / n if n else 0.0
+    return out | {"sharpe": mean / (var ** 0.5) if var > 0 else 0.0}
+
+
+class ExpectedAllocator(Allocator):
+    """Same decisions, but a sandwiched position pays the win/loss *expectation* instead of an RNG
+    draw, so the sweep evaluates any WIN_RATE / CAPTURE / TIP deterministically:
+    ``WIN_RATE * (capture*pi - tip) + (1 - WIN_RATE) * (-tip)``.
+    """
+
+    def _payoff(self, pos: dict) -> tuple[int, str]:
+        realized = int(pos["pi"] * self._capture_fraction(pos["pi"]))
+        win_gain = max(0, realized - self.TIP_LAMPORTS)
+        self.n_wins += self.WIN_RATE                 # fractional: expectation, kept for the table
+        self.n_race_loss += 1.0 - self.WIN_RATE
+        expected = self.WIN_RATE * win_gain + (1.0 - self.WIN_RATE) * -self.TIP_LAMPORTS
+        return int(round(expected)), "expected"
+
+
+def run_expected(replay: dict, params: dict, seed: int = 0) -> dict:
+    """Deterministic expected-P&L replay (no RNG). Returns the same metric keys as ``run``."""
+    alloc = ExpectedAllocator(initial_sol=0.5, budget_sol=0.5, seed=seed)
+    return _metrics(alloc, _replay(alloc, replay, params))
 
 
 if __name__ == "__main__":
