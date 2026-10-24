@@ -20,11 +20,11 @@ Env-var equivalents (only these five are env-overridable today):
 
 | Symbol | Env |
 |---|---|
-| `MIN_P` | `TLIVE_MIN_COMMIT_P` = `0.243` |
-| `MIN_PI_LAMPORTS` | `TLIVE_MIN_COMMIT_PI` = `430444` |
-| `MAX_SLIPPAGE_FRAC` | `TLIVE_MAX_SLIPPAGE` = `0.162` |
-| `MIN_COUNTERPARTY_P` | `TLIVE_MIN_P` = `0.087` |
-| `MAX_PRIORITY_FEE` | `TLIVE_MAX_FEE` = `864927` |
+| `MIN_P` | `TSOL_MIN_COMMIT_P` = `0.243` |
+| `MIN_PI_LAMPORTS` | `TSOL_MIN_COMMIT_PI` = `430444` |
+| `MAX_SLIPPAGE_FRAC` | `TSOL_MAX_SLIPPAGE` = `0.162` |
+| `MIN_COUNTERPARTY_P` | `TSOL_MIN_P` = `0.087` |
+| `MAX_PRIORITY_FEE` | `TSOL_MAX_FEE` = `864927` |
 
 
 ## 2. Backtest table (mean over seeds @ WR=0.5 / capture size-dep / tip 100k)
@@ -106,4 +106,4 @@ Max deviation of deterministic expected P&L when each knob is pushed to the edge
 
 ## 5. Recommendation
 
-Treat the +0.4 SOL backtest as a whale-luck upper bound, not an edge. The engine's realised P&L is dominated by WIN_RATE (unknowable offline) and by a few rare large-MESP targets, so its mean moves less than its ±0.23–0.25 SOL std. The single parameter that moves the needle most *reliably* is the model-score floor `MIN_P` (`TLIVE_MIN_COMMIT_P`): raising it from 0.1 to ≈0.25 cuts the no-counterparty bleed — the largest recurring loss — roughly in half and lifts hit-rate toward ~40% at the cost of throughput. Pair it with a looser slippage gate (`TLIVE_MAX_SLIPPAGE` 0.05 → ~0.15) and a tighter priority-fee gate (`TLIVE_MAX_FEE` ~1M → ~0.4M, to skip bot-contended victims), keeping the exposure knobs near current values. Do **not** deploy for positive expectation before measuring WIN_RATE on a small live sample: expected P&L crosses ~zero around WR 0.3–0.5 and turns clearly positive only above ~0.6–0.7. The holdout commit count and its ≈0 P&L confirm the train optimum is window-specific; ship the conservative selection, not the headline number.
+Treat the +0.4 SOL backtest as a whale-luck upper bound, not an edge. The engine's realised P&L is dominated by WIN_RATE (unknowable offline) and by a few rare large-MESP targets, so its mean moves less than its ±0.23–0.25 SOL std. The single parameter that moves the needle most *reliably* is the model-score floor `MIN_P` (`TSOL_MIN_COMMIT_P`): raising it from 0.1 to ≈0.25 cuts the no-counterparty bleed — the largest recurring loss — roughly in half and lifts hit-rate toward ~40% at the cost of throughput. Pair it with a looser slippage gate (`TSOL_MAX_SLIPPAGE` 0.05 → ~0.15) and a tighter priority-fee gate (`TSOL_MAX_FEE` ~1M → ~0.4M, to skip bot-contended victims), keeping the exposure knobs near current values. Do **not** deploy for positive expectation before measuring WIN_RATE on a small live sample: expected P&L crosses ~zero around WR 0.3–0.5 and turns clearly positive only above ~0.6–0.7. The holdout commit count and its ≈0 P&L confirm the train optimum is window-specific; ship the conservative selection, not the headline number.

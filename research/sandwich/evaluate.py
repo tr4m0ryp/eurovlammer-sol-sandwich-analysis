@@ -19,7 +19,7 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import average_precision_score, roc_auc_score
 
-from tlive.metrics.features import FEATURES, features
+from tsol.metrics.features import FEATURES, features
 
 PHI_FREE = [f for f in FEATURES if f not in ("phi", "log_phi", "room", "log_mesp", "mesp_rel")]
 NO_HIST = [f for f in FEATURES if f != "log_pool_hist"]

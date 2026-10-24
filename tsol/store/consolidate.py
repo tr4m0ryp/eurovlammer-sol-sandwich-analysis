@@ -1,6 +1,6 @@
 """One DuckDB file for the analysis: the night's live runs plus the 24 h research labels.
 
-    .venv/bin/python -m tlive.store.consolidate --since-run live_20261014_184148
+    .venv/bin/python -m tsol.store.consolidate --since-run live_20261014_184148
 
 Tables (``data/screener.duckdb``):
   risk              every settled risk buy (buy-side, gain above the two-transaction gas), one row per

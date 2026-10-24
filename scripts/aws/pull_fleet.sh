@@ -6,7 +6,7 @@
 #   pull_fleet.sh status RUN                 instances, done markers, last log line per worker
 #   pull_fleet.sh fetch RUN                  decoded swaps to data/interim/swaps_RUN (raw stays in S3)
 #   pull_fleet.sh terminate RUN              stop every instance tagged run=RUN
-# Only touches instances tagged project=trenches-live and run=RUN. Every worker shuts down by
+# Only touches instances tagged project=trenches-sol and run=RUN. Every worker shuts down by
 # DEADLINE_MIN regardless (instance-initiated shutdown = terminate).
 set -uo pipefail
 R=$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)
@@ -29,7 +29,7 @@ userdata() {  # worker W pulls [S, E)
 shutdown -h +$DEADLINE_MIN
 exec > /var/log/tl-worker.log 2>&1
 set -x
-B=s3://$BUCKET/trenches-live/$run
+B=s3://$BUCKET/trenches-sol/$run
 export DEBIAN_FRONTEND=noninteractive HOME=/root
 apt-get update -qq && apt-get install -y -qq python3-venv python3-pip
 python3 -m venv /v && /v/bin/pip install -q awscli aiohttp orjson base58 pandas pyarrow duckdb numpy
@@ -51,13 +51,13 @@ launch() {
   local run=$1 start=$2 end=$3 n=$4 w0=${5:-0}
   session
   local per=$(( ((end - start) / n + 199) / 200 * 200 ))
-  tar czf /tmp/tl_code_$run.tgz -C "$R" --exclude=__pycache__ tlive research
-  aws s3 cp /tmp/tl_code_$run.tgz s3://$BUCKET/trenches-live/$run/code.tgz --quiet
+  tar czf /tmp/tl_code_$run.tgz -C "$R" --exclude=__pycache__ tsol research
+  aws s3 cp /tmp/tl_code_$run.tgz s3://$BUCKET/trenches-sol/$run/code.tgz --quiet
   local ami sg subnets
   ami=$(aws ssm get-parameter --name /aws/service/canonical/ubuntu/server/24.04/stable/current/amd64/hvm/ebs-gp3/ami-id --query Parameter.Value --output text)
   sg=$(aws ec2 describe-security-groups --group-names trenches-train-ssh --query 'SecurityGroups[0].GroupId' --output text)
   subnets=($(aws ec2 describe-subnets --filters Name=default-for-az,Values=true --query 'Subnets[].SubnetId' --output text))
-  local tags="[{Key=project,Value=trenches-live},{Key=run,Value=$run},{Key=Name,Value=tl-$run}]"
+  local tags="[{Key=project,Value=trenches-sol},{Key=run,Value=$run},{Key=Name,Value=tl-$run}]"
   mkdir -p "$R/logs/$run"
   for i in $(seq 0 $((n - 1))); do
     local w=$((w0 + i)) s=$((start + i * per)) e=$((start + (i + 1) * per)); [ $e -gt "$end" ] && e=$end
@@ -86,25 +86,25 @@ launch() {
 status() {
   local run=$1
   session
-  aws ec2 describe-instances --filters Name=tag:run,Values="$run" Name=tag:project,Values=trenches-live \
+  aws ec2 describe-instances --filters Name=tag:run,Values="$run" Name=tag:project,Values=trenches-sol \
     --query 'Reservations[].Instances[].[InstanceId,InstanceType,State.Name]' --output text
-  echo "done: $(aws s3 ls s3://$BUCKET/trenches-live/$run/done/ | wc -l)"
-  for f in $(aws s3 ls s3://$BUCKET/trenches-live/$run/logs/ | awk '{print $4}'); do
-    echo "$f: $(aws s3 cp s3://$BUCKET/trenches-live/$run/logs/$f - 2>/dev/null | grep -E '^[0-9]+ blocks=|\.jsonl\.gz [0-9]+$|Traceback|Error' | tail -n 1)"
+  echo "done: $(aws s3 ls s3://$BUCKET/trenches-sol/$run/done/ | wc -l)"
+  for f in $(aws s3 ls s3://$BUCKET/trenches-sol/$run/logs/ | awk '{print $4}'); do
+    echo "$f: $(aws s3 cp s3://$BUCKET/trenches-sol/$run/logs/$f - 2>/dev/null | grep -E '^[0-9]+ blocks=|\.jsonl\.gz [0-9]+$|Traceback|Error' | tail -n 1)"
   done
 }
 
 fetch() {
   local run=$1
   session
-  aws s3 sync s3://$BUCKET/trenches-live/$run/swaps/ "$R/data/interim/swaps_$run/" --quiet
+  aws s3 sync s3://$BUCKET/trenches-sol/$run/swaps/ "$R/data/interim/swaps_$run/" --quiet
   ls "$R/data/interim/swaps_$run" | wc -l
 }
 
 terminate() {
   local run=$1
   session
-  ids=$(aws ec2 describe-instances --filters Name=tag:run,Values="$run" Name=tag:project,Values=trenches-live \
+  ids=$(aws ec2 describe-instances --filters Name=tag:run,Values="$run" Name=tag:project,Values=trenches-sol \
     Name=instance-state-name,Values=pending,running --query 'Reservations[].Instances[].InstanceId' --output text)
   [ -n "$ids" ] && aws ec2 terminate-instances --instance-ids $ids --query 'TerminatingInstances[].InstanceId' --output text
 }

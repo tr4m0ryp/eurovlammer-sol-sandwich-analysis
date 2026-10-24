@@ -4,7 +4,7 @@ Reads the risk Parquet of every run directory (all restarts of the night), de-du
 recomputes **top 10%** over the whole night (``mesp_best`` >= the night's 90th percentile).
 Writes ``data/exports/risk_<since>.parquet`` and a ``.csv`` twin, and prints the summary.
 
-    .venv/bin/python -m tlive.store.export --since 2026-10-14T18:00
+    .venv/bin/python -m tsol.store.export --since 2026-10-14T18:00
 """
 from __future__ import annotations
 

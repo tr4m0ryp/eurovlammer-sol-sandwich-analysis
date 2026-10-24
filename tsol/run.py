@@ -2,7 +2,7 @@
 sandwicher would pick, and settle each flag against the real sandwiches ``SETTLE`` slots later.
 
     set -a; . ~/projects/trenches/.env; set +a
-    .venv/bin/python -m tlive.run            # page on http://127.0.0.1:8765
+    .venv/bin/python -m tsol.run            # page on http://127.0.0.1:8765
 """
 from __future__ import annotations
 
@@ -91,11 +91,11 @@ async def main(cfg: dict) -> None:
     alloc = Allocator()
     alloc.set_victims(victims)          # settle the wallet against the real sandwich feed
     # real executor (dry-run): signs with the configured trader keypair, else a throwaway for sim.
-    # Opt-in via TLIVE_EXEC=1: its per-event RPC calls are throttled off by default so the screener
+    # Opt-in via TSOL_EXEC=1: its per-event RPC calls are throttled off by default so the screener
     # stays on the tip while it collects ground truth for the profitability assessment.
-    exec_enabled = os.environ.get("TLIVE_EXEC") == "1"
+    exec_enabled = os.environ.get("TSOL_EXEC") == "1"
     rpc_url = os.environ.get("ALCHEMY_RPC_URL", "") or os.environ.get("HELIUS_RPC_URL", "")
-    trader = load_keypair("TLIVE_TRADER_KEYPAIR") if os.environ.get("TLIVE_TRADER_KEYPAIR") else Keypair()
+    trader = load_keypair("TSOL_TRADER_KEYPAIR") if os.environ.get("TSOL_TRADER_KEYPAIR") else Keypair()
     ex = SandwichExecutor(rpc_url, trader, live=False,
                           rpc_fallback=os.environ.get("HELIUS_RPC_URL", "") or None)
     last_push = 0.0

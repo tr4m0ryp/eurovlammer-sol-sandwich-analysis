@@ -12,7 +12,7 @@ Three visibility tiers:
 The tab shows only orders with at least medium visibility — the ones an attacker could plausibly
 have seen before inclusion.
 
-    .venv/bin/python -m tlive.store.visibility_push
+    .venv/bin/python -m tsol.store.visibility_push
 """
 from __future__ import annotations
 

@@ -7,7 +7,7 @@ universe is rebuilt from the ``swaps`` table (which already carries the live sco
 math: ``interesting`` → unshielded (visible) → budget-capped ``exposure(swap, capital=0.5 SOL)`` →
 ``mesp >= MIN_PROFIT`` and ``roi >= MIN_ROI``. The per-pool ``pool_freq`` is recomputed in slot order.
 
-``run()`` also applies the three tunable *opportunity-risk* gates from ``tlive/exec/risk.py``
+``run()`` also applies the three tunable *opportunity-risk* gates from ``tsol/screen/gate/opportunity.py``
 (slippage / counterparty-p / priority-fee) as a pre-commit filter, matching the intended pipeline.
 The token-safety gate (mint/freeze authority, transfer-hook) is a fixed RPC check that cannot be
 rebuilt offline; it is orthogonal to the 12 tuned knobs and out of scope.
@@ -27,9 +27,9 @@ from pathlib import Path
 
 import duckdb
 import pandas as pd
-from tlive.chain.swaps.model import Swap
-from tlive.engine.allocator import Allocator
-from tlive.metrics.exposure import exposure
+from tsol.chain.swaps.model import Swap
+from tsol.engine.allocator import Allocator
+from tsol.metrics.exposure import exposure
 
 ROOT = Path(__file__).resolve().parents[2]
 DB = ROOT / "data" / "screener.duckdb"
@@ -153,7 +153,7 @@ def split_replay(replay: dict, frac: float = 0.8) -> tuple[dict, dict]:
     return train, hold
 
 
-# Default opportunity-risk gate thresholds (mirror tlive/exec/risk.py defaults).
+# Default opportunity-risk gate thresholds (mirror tsol/screen/gate/opportunity.py defaults).
 RISK_DEFAULTS = {"MAX_SLIPPAGE_FRAC": 0.05, "MIN_COUNTERPARTY_P": 0.02, "MAX_PRIORITY_FEE": 1_000_000}
 
 

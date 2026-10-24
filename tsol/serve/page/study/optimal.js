@@ -1,5 +1,5 @@
 // Optimal tab: the night's most profitable realistic sandwich targets and the patterns behind them.
-// Reads optimal/summary + optimal/rows_NNN from the artifact database (tlive.store.optimal_push).
+// Reads optimal/summary + optimal/rows_NNN from the artifact database (tsol.store.optimal_push).
 "use strict";
 const O = { s: null, rows: [], view: "", sort: "rank" };
 const RULE_TXT = {

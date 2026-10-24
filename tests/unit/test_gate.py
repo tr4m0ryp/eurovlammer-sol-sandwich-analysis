@@ -1,8 +1,8 @@
 """The exec risk-recognition guardrails flag balance-lock / dump / slippage vectors and pass clean tokens."""
 import struct
 
-from tlive.exec.risk import event_risks, gate
-from tlive.exec.safety import freeze_authority, mint_authority, risky_extensions
+from tsol.screen.gate.opportunity import event_risks, gate
+from tsol.screen.gate.token import freeze_authority, mint_authority, risky_extensions
 
 
 def _mint(freeze: bool = False, mint_auth: bool = False) -> bytes:

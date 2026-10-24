@@ -146,7 +146,7 @@ Polling at 2 calls/sec, following every slot:
 That overruns a **Free** plan (1M) five-fold and fits inside **Developer** (10M) with room.
 
 **The same blocks over LaserStream gRPC cost far more, not less.** A full block in this repo's
-own words is "~3 MB of JSON" (`tlive/ingest/rpc.py`). At 20 credits/MB an unfiltered 3 MB block
+own words is "~3 MB of JSON" (`tsol/ingest/rpc.py`). At 20 credits/MB an unfiltered 3 MB block
 is **60 credits against 1 credit for `getBlock`**, a 60x inversion:
 
 | Feed | Per block | Credits/day at 2.5 blocks/s | Credits/30d |
@@ -161,9 +161,9 @@ committing.
 
 ## Recommendation
 
-**Our polling is almost certainly not what drained Helius.** `tlive/ingest/rpc.py:default_pool()`
+**Our polling is almost certainly not what drained Helius.** `tsol/ingest/rpc.py:default_pool()`
 polls `publicnode.com` plus `ALCHEMY_RPC_URL`; Helius appears only as `HELIUS_RPC_URL`, an
-executor fallback in `tlive/run.py:97-100`. The 150-170k `getBlock`/day go to Alchemy and the
+executor fallback in `tsol/run.py:97-100`. The 150-170k `getBlock`/day go to Alchemy and the
 public node, not to Helius. Whatever spent the Helius allowance is something else, and the
 Credits/Usage page is the only place that says what.
 

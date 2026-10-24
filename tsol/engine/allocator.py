@@ -28,19 +28,19 @@ class Allocator:
     ADVERSE = 0.01        # fractional adverse-movement loss when the lock expires with no counterparty
     RESOLVE_DELAY = 15    # slots to wait before resolving: the screener settles a victim ~14 slots after
                           # its buy (SETTLE = WINDOW_SLOTS + 6 = 14), so we must look it up after that.
-    BETA = float(os.environ.get("TLIVE_BETA", "0.004"))       # pool-crowding penalty, per prior hit, per (1 - p)
+    BETA = float(os.environ.get("TSOL_BETA", "0.004"))       # pool-crowding penalty, per prior hit, per (1 - p)
     SAME_POOL = 0.01      # extra penalty when the pool already has an active position
-    THETA0 = float(os.environ.get("TLIVE_THETA0", "0.012"))   # expected-net-return threshold at the cap (scarce)
-    THETA_INF = float(os.environ.get("TLIVE_THETA_INF", "0.004"))  # threshold as the wallet grows large
+    THETA0 = float(os.environ.get("TSOL_THETA0", "0.012"))   # expected-net-return threshold at the cap (scarce)
+    THETA_INF = float(os.environ.get("TSOL_THETA_INF", "0.004"))  # threshold as the wallet grows large
     T1, T2, T3 = 1.0, 2.0, 5.0     # wallet tiers, multiples of C0
-    ALPHA_SCARCE = float(os.environ.get("TLIVE_ALPHA_SCARCE", "0.5"))  # scarce tier: one position <= this share
+    ALPHA_SCARCE = float(os.environ.get("TSOL_ALPHA_SCARCE", "0.5"))  # scarce tier: one position <= this share
     WIN_RATE = 0.5        # P(we win the race) given a real sandwich landed on the victim
     CAPTURE_FRACTION = 0.25  # realised share of predicted MESP (calibration: 11-27% above 0.01 SOL)
     TIP_LAMPORTS = 100_000    # Jito tip paid per win
     # Selectivity gates (the lever on "no CP"): only commit targets the model is confident will be
     # sandwiched, and skip sub-penny sandwiches real attackers ignore. Overridable via env.
-    MIN_P = float(os.environ.get("TLIVE_MIN_COMMIT_P", "0.1"))            # model-score floor
-    MIN_PI_LAMPORTS = int(os.environ.get("TLIVE_MIN_COMMIT_PI", "1000000"))  # 0.001 SOL
+    MIN_P = float(os.environ.get("TSOL_MIN_COMMIT_P", "0.1"))            # model-score floor
+    MIN_PI_LAMPORTS = int(os.environ.get("TSOL_MIN_COMMIT_PI", "1000000"))  # 0.001 SOL
     HISTORY_MAX = 500
 
     def __init__(self, initial_sol: float = 0.5, budget_sol: float = 0.5, seed: int | None = None):

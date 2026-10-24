@@ -3,7 +3,7 @@
 Reads the ``optimal`` table (research/sandwich/optimal.py) from ``data/screener.duckdb`` and writes
 ``data/artifact/optimal/summary.json`` plus ``rows_NNN.json`` chunks (compact arrays).
 
-    .venv/bin/python -m tlive.store.optimal_push
+    .venv/bin/python -m tsol.store.optimal_push
 """
 from __future__ import annotations
 

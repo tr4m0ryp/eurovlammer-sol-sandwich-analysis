@@ -5,7 +5,7 @@ the script subscribes to ``live/snapshot`` in the artifact database. ``snapshot`
 document's body to disk and prints ``PUSH <path>``: the Claude session relaying the run turns each
 line into one database write (the artifact cannot reach this machine).
 
-    .venv/bin/python -m tlive.serve.artifact      # writes data/artifact/sandwich_screener.html
+    .venv/bin/python -m tsol.serve.artifact      # writes data/artifact/sandwich_screener.html
 """
 from __future__ import annotations
 

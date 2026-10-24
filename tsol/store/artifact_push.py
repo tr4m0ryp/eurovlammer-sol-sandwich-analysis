@@ -4,7 +4,7 @@ The artifact cannot open a local file, so the analysis data is shipped as docume
 ``night/summary`` (totals, size-vs-MC deciles, hourly counts) and ``night/rows_NNN`` chunks of the
 risk rows as compact arrays (column order in ``summary.columns``), each under the 256 KiB cap.
 
-    .venv/bin/python -m tlive.store.artifact_push      # writes data/artifact/night/*.json
+    .venv/bin/python -m tsol.store.artifact_push      # writes data/artifact/night/*.json
 """
 from __future__ import annotations
 

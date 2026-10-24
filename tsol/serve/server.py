@@ -26,8 +26,8 @@ PARTS = {"flags": ("flags", 120), "sandwiches": ("sandwiches", 50), "risk": ("ri
 
 # Shared passcode gate. The passcode never leaves the server; a successful login sets an opaque
 # ``AUTH_COOKIE`` session cookie that the page, the snapshot and the SSE stream all present.
-PASSCODE = os.environ.get("TLIVE_PASSCODE", "REDACTED_PASSCODE")
-AUTH_COOKIE = "tlive_auth"
+PASSCODE = os.environ.get("TSOL_PASSCODE", "REDACTED_PASSCODE")
+AUTH_COOKIE = "tsol_auth"
 LOGIN_HTML = """<!doctype html>
 <html lang="en">
 <head>

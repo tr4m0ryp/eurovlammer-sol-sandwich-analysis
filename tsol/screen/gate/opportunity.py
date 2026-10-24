@@ -13,9 +13,9 @@ import os
 # than this share of the pool reserve will move the price hard on the unwind. Counterparty: below the
 # model's flag threshold the buy is unlikely to be a sandwich target. Priority fee: a victim paying
 # this much to land fast leaves a short window.
-MAX_SLIPPAGE_FRAC = float(os.environ.get("TLIVE_MAX_SLIPPAGE", "0.05"))
-MIN_COUNTERPARTY_P = float(os.environ.get("TLIVE_MIN_P", "0.02"))
-MAX_PRIORITY_FEE = int(os.environ.get("TLIVE_MAX_FEE", "1000000"))    # microlamports per CU
+MAX_SLIPPAGE_FRAC = float(os.environ.get("TSOL_MAX_SLIPPAGE", "0.05"))
+MIN_COUNTERPARTY_P = float(os.environ.get("TSOL_MIN_P", "0.02"))
+MAX_PRIORITY_FEE = int(os.environ.get("TSOL_MAX_FEE", "1000000"))    # microlamports per CU
 
 
 def event_risks(row: dict) -> dict:

@@ -36,9 +36,9 @@ deployed (finetuned allocation + risk gates). Status reflects the 2026-10-15 cod
 
 Today the front leg is capped at **0.5 SOL** in two places:
 
-- `tlive/screen/visibility/strict.py` → `BUDGET_LAMPORTS = 500_000_000` (0.5 SOL) — the strict gate
+- `tsol/screen/visibility/strict.py` → `BUDGET_LAMPORTS = 500_000_000` (0.5 SOL) — the strict gate
   `0 < front <= budget`.
-- `tlive/engine/allocator.py` → `C0 = 0.5` (initial capital + exposure cap) and `budget_sol = 0.5`.
+- `tsol/engine/allocator.py` → `C0 = 0.5` (initial capital + exposure cap) and `budget_sol = 0.5`.
 
 Raising the cap loosens the `front <= budget` gate, which is a hard filter on the strict universe
 (measured: strict = 3.76% of buys; commits ≈ 0.008% of buys). More capital ⇒ more budget-feasible
@@ -52,7 +52,7 @@ commit + real-hit counts.
 
 ## #1 Mempool — what to provide, cost
 
-Current ingest (`tlive/ingest/follow.py`) polls **confirmed** blocks via RPC (`getBlock`, `start_lag=1`),
+Current ingest (`tsol/ingest/follow.py`) polls **confirmed** blocks via RPC (`getBlock`, `start_lag=1`),
 so we see a buy only after it has already landed. A real sandwicher sees it pre-confirmation.
 
 - **Geyser gRPC stream** (Yellowstone): a validator pushes `transaction`/`block` notices as they are

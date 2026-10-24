@@ -5,7 +5,7 @@ optimal set, the attacked rate under each protection a buyer actually controls (
 protected submission, a routed order), and the attacked rate by prior pool momentum. No capture, no
 execution: this is the defensive mirror of the Optimal patterns.
 
-    .venv/bin/python -m tlive.store.exposure_push
+    .venv/bin/python -m tsol.store.exposure_push
 """
 from __future__ import annotations
 

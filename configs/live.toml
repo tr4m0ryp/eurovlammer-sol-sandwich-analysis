@@ -1,4 +1,4 @@
-# trenches-live screener run. Secrets never live here: Alchemy's URL comes from ALCHEMY_RPC_URL.
+# trenches-sol screener run. Secrets never live here: Alchemy's URL comes from ALCHEMY_RPC_URL.
 [run]
 out_dir = "data/live"
 host = "0.0.0.0"

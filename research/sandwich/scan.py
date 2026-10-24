@@ -13,7 +13,7 @@ from pathlib import Path
 import orjson
 import pandas as pd
 
-from tlive.chain.swaps import decode_tx
+from tsol.chain.swaps import decode_tx
 
 
 def block_rows(blk: dict) -> list[dict]:

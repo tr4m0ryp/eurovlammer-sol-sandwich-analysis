@@ -18,8 +18,8 @@ from pathlib import Path
 
 import orjson
 
-from tlive.chain.programs import PUMP, PUMPSWAP
-from tlive.ingest.rpc import default_pool
+from tsol.chain.programs import PUMP, PUMPSWAP
+from tsol.ingest.rpc import default_pool
 
 KEEP = (PUMP, PUMPSWAP)
 
