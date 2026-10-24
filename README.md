@@ -104,7 +104,8 @@ Offline study (reproduces the labels and the model):
 .venv/bin/python -m research.sandwich.pull --slots 27000 --out data/raw/blocks_DAY
 .venv/bin/python -m research.sandwich.scan --raw data/raw/blocks_DAY --out data/interim/swaps_DAY
 .venv/bin/python -m research.sandwich.label --swaps data/interim/swaps_DAY --out data/interim/labels_DAY.parquet
-.venv/bin/python -m research.sandwich.evaluate --labels data/interim/labels_DAY.parquet --save
+.venv/bin/python -m research.sandwich.evaluate --labels data/interim/labels_DAY.parquet \
+    --save data/models/screener.txt
 ```
 
 Live screener (needs the trained model under `data/models/`):
