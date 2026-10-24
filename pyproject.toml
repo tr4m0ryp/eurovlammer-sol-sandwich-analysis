@@ -19,8 +19,11 @@ dependencies = [
 dev = ["pytest>=9.1"]
 
 [tool.setuptools.packages.find]
-include = ["tsol*"]
+include = ["sol_mev*"]
+
+[tool.setuptools.package-data]
+"sol_mev.app.dashboard" = ["page/**/*"]
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
+testpaths = ["scripts/checks"]
 pythonpath = ["."]
