@@ -1,6 +1,6 @@
 """Event-level risk scoring and the acceptance gate.
 
-Complements ``safety.py`` (which checks the *token* on-chain) with the *opportunity* risks read off
+Complements ``token.py`` (which checks the *token* on-chain) with the *opportunity* risks read off
 the strict row: unwind slippage (front size vs. pool depth), counterparty likelihood (model score),
 and competition (the victim's priority fee). The gate hard-rejects unsafe tokens and rejects
 opportunities whose soft risks pass a threshold.

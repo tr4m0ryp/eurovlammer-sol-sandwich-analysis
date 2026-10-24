@@ -10,8 +10,9 @@
 # DEADLINE_MIN regardless (instance-initiated shutdown = terminate).
 set -uo pipefail
 R=$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)
-export AWS_PROFILE=trenches-v2 AWS_DEFAULT_REGION=us-east-1
-ACCOUNT=AWS_ACCOUNT_ID BUCKET=trenches-train-AWS_ACCOUNT_ID DEADLINE_MIN=${DEADLINE_MIN:-180}
+export AWS_PROFILE=${AWS_PROFILE:-default} AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION:-us-east-1}
+ACCOUNT=${TSOL_AWS_ACCOUNT:?set TSOL_AWS_ACCOUNT to the AWS account id} BUCKET=${TSOL_BUCKET:-trenches-train-$ACCOUNT}
+DEADLINE_MIN=${DEADLINE_MIN:-180}
 TYPES=${TYPES:-"c7a.xlarge c6a.xlarge m7a.xlarge c7i.xlarge"}
 RPS=${RPS:-7}
 MARKET=${MARKET:-spot}       # MARKET=ondemand for a relaunch that must not be interrupted
@@ -19,7 +20,7 @@ log() { echo "[$(date -u +%H:%M:%S)] $*"; }
 
 session() {
   [ "$(aws sts get-caller-identity --query Account --output text 2>/dev/null)" = "$ACCOUNT" ] \
-    || { echo "NEEDS_AWS_LOGIN: aws login --remote --profile trenches-v2-login"; exit 3; }
+    || { echo "NEEDS_AWS_LOGIN: aws login --profile $AWS_PROFILE"; exit 3; }
 }
 
 userdata() {  # worker W pulls [S, E)
