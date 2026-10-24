@@ -1,6 +1,6 @@
 """Artifact documents for the Optimal tab: the gate funnel, the found patterns, and every optimal row.
 
-Reads the ``optimal`` table (research/sandwich/optimal.py) from ``data/screener.duckdb`` and writes
+Reads the ``optimal`` table (scripts/research/study/optimal.py) from ``data/screener.duckdb`` and writes
 ``data/artifact/optimal/summary.json`` plus ``rows_NNN.json`` chunks (compact arrays).
 
     python3 . push-optimal

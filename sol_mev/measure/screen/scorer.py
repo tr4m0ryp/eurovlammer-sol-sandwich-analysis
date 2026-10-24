@@ -3,7 +3,7 @@
 Base features come from the same vectorised code. Context features (same-side pool flow and pool
 trade count over the last ``CTX_SLOTS``, the signer's trade count over the last ``WALLET_SLOTS``)
 are kept incrementally in per-pool and per-signer deques, so a block costs O(its swaps) instead
-of a recompute over history; ``tests/unit/test_scorer.py`` pins parity with ``context_features``.
+of a recompute over history; ``scripts/checks/measure/test_scorer.py`` pins parity with ``context_features``.
 """
 from __future__ import annotations
 

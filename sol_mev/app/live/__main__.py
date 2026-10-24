@@ -1,4 +1,4 @@
-"""``python3 . live [--config configs/live.toml]``"""
+"""``python3 . live [--config FILE.toml]``: run the live screener until SIGTERM or Ctrl-C."""
 from __future__ import annotations
 
 import argparse
