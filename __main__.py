@@ -24,6 +24,8 @@ COMMANDS = {
     "pull": ("scripts.research.data.pull", "pull a range of confirmed blocks (venue-filtered JSONL)"),
     "scan": ("scripts.research.data.scan", "decode pulled blocks into swap Parquet"),
     "label": ("scripts.research.data.label", "label cross-slot sandwiches and attach exposure"),
+    "release": ("scripts.research.data.release.solana", "stage the recorded data for publication (zstd Parquet tree)"),
+    "manifest": ("scripts.research.data.release.manifest", "MANIFEST.json (sha256, rows, ranges) for a staging root"),
     "evaluate": ("scripts.research.study.evaluate", "score every filter on a time split; --save the model"),
     "optimal": ("scripts.research.study.optimal", "realistic, sandwichable, profitable target selection"),
     # simulated allocation, offline replay
