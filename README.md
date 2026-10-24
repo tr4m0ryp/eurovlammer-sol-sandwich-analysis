@@ -45,7 +45,7 @@ real attacks, and a model learns the selection.
 
 The victim rate climbs from **0.54 per mille** for swaps with phi below 0.01
 to **42 per mille** for phi between 1 and 3, a 78x rise, measured over
-7,418,449 non-attacker swaps from a 24 hour pull. Above phi 3 it falls back
+7,418,449 non-attacker swaps from a 216,000-slot pull (13.0 h of block time). Above phi 3 it falls back
 slightly: those are mostly very large buys that attackers lack the capital
 to front-run.
 
@@ -164,7 +164,7 @@ behind the tip.
 
 **Label.** $`y = 1`$ when a swap was a victim of an H3 attacker. The universe
 is every swap that is not itself a leg and not sent by a detected attacker.
-The weighted base rate on the 24 hour day is 0.65%.
+The weighted base rate on the labelled day (216,000 slots, 13.0 h) is 0.65%.
 
 **Features.** 21 per-swap numbers, computed by the same vectorised code
 offline and live. Context windows only look at strictly earlier swaps, so a
@@ -308,7 +308,7 @@ from public data, so it is swept, not fitted.
 
 ### The selection model beats every single-swap baseline
 
-Held out: the last 40% of a 24 hour day (216,000 slots, 7.9M swaps;
+Held out: the last 40% of the labelled day (216,000 slots, 13.0 h of block time, 7.9M swaps;
 1.0M held-out swaps with 25,054 victims, negatives subsampled 30% and
 weighted back).
 
@@ -389,7 +389,7 @@ Among swaps with phi above 0.3 unless stated:
 - **Detection gaps.** Evasive sandwiches that link legs through token
   transfers between wallets are not detected yet, and fee-exempt pump curves
   form a separate regime where phi explodes.
-- **One day.** The model is trained and tested on one 24 hour pull. A second,
+- **One day.** The model is trained and tested on one 216,000-slot pull (13.0 h of block time). A second,
   independent day is the test that would make the numbers a result.
 
 ## What is left to finish

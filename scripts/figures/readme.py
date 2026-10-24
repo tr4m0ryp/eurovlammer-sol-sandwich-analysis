@@ -1,6 +1,6 @@
 """README figures, light and dark, from the recorded data only (read-only DuckDB over Parquet and
 the consolidated screener database). Run with ``TSOL_ROOT`` pointing at a checkout that holds
-``data/`` (the 24 h labels and ``screener.duckdb``):
+``data/`` (the 216,000-slot labels and ``screener.duckdb``):
 
     TSOL_ROOT=/path/with/data python3 -m scripts.figures.readme
 """
@@ -31,7 +31,7 @@ def _con() -> duckdb.DuckDBPyConnection:
 
 
 def phi_rates(con, labels: Path) -> list[tuple[str, float, int]]:
-    """Victim rate (per mille) by phi bin over every non-attacker swap of the 24 h labels."""
+    """Victim rate (per mille) by phi bin over every non-attacker swap of the labelled day."""
     cases = " ".join(f"when phi < {hi} then {i}" for i, hi in enumerate(PHI_EDGES[1:]))
     rows = con.execute(f"""
         with s as (select role, bot, sol::double n, greatest(x_pre, 1)::double x, fee_bps / 1e4 r, is_buy
@@ -88,7 +88,7 @@ def draw(phi, cal, curve) -> None:
         fig, ax = _axes(t)
         ax.bar([b for b, _, _ in phi], [r for _, r, _ in phi], color=t["line"])
         ax.set(xlabel="phi = price impact / round-trip fee hurdle", ylabel="victim rate (per mille)",
-               title=f"Who gets sandwiched: victim rate by phi ({sum(n for *_, n in phi):,} swaps, 24 h)")
+               title=f"Who gets sandwiched: victim rate by phi ({sum(n for *_, n in phi):,} swaps, 216k slots, 13 h)")
         _save(fig, "phi", mode)
 
         fig, ax = _axes(t)
