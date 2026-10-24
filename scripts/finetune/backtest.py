@@ -134,7 +134,6 @@ def run_mc(replay: dict, params: dict, seeds: int = 5) -> dict:
 
 def split_replay(replay: dict, frac: float = 0.8) -> tuple[dict, dict]:
     """Split into an early (train) and late (holdout) time window along the slot axis."""
-    slots = [s for s, _ in replay["slots"]]
     n_rows = sum(len(r) for _, r in replay["slots"])
     acc = 0
     cut = None

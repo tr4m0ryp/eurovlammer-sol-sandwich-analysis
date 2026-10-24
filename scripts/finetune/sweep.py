@@ -85,7 +85,6 @@ def refine(replay: dict, start: dict, steps: int = 8, rng_seed: int = 7) -> dict
     for _ in range(steps):
         improved = False
         for k, (lo, hi) in RANGES.items():
-            sign = 1 if k in LOG_UNIFORM else 1
             # multiplicative step for log-uniform, additive for linear
             for d in (-1, 1):
                 if k in LOG_UNIFORM:
