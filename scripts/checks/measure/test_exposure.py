@@ -1,8 +1,8 @@
 """Exposure math and cross-slot sandwich detection on synthetic swaps."""
-from sol_mev.onchain.decode.swaps.model import Swap
-from sol_mev.measure.exposure.mesp import exposure
 from sol_mev.measure.exposure.features import base_features
+from sol_mev.measure.exposure.mesp import exposure
 from sol_mev.measure.sandwich.detect import find
+from sol_mev.onchain.decode.swaps.model import Swap
 
 X, Y = 100e9, 1e15
 

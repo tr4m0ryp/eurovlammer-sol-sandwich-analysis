@@ -13,8 +13,8 @@ from collections import Counter, defaultdict, deque
 from dataclasses import fields
 from pathlib import Path
 
-from sol_mev.onchain.decode.swaps.model import Swap
 from sol_mev.measure.sandwich.detect import WINDOW_SLOTS, Sandwich, find
+from sol_mev.onchain.decode.swaps.model import Swap
 
 SETTLE = WINDOW_SLOTS + 6
 SPAN = 3 * WINDOW_SLOTS + 16

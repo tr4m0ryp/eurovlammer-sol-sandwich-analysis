@@ -12,6 +12,7 @@ import json
 from pathlib import Path
 
 import duckdb
+
 from sol_mev.config import ROOT
 
 OUT = ROOT / "data" / "artifact" / "night"

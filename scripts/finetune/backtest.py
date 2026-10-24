@@ -23,14 +23,14 @@ import json
 import statistics
 import sys
 from collections import defaultdict, deque
-from pathlib import Path
 
 import duckdb
 import pandas as pd
+
+from sol_mev.config import ROOT
+from sol_mev.measure.exposure.mesp import exposure
 from sol_mev.onchain.decode.swaps.model import Swap
 from sol_mev.strategy.allocator import Allocator
-from sol_mev.measure.exposure.mesp import exposure
-from sol_mev.config import ROOT
 
 DB = ROOT / "data" / "screener.duckdb"
 CACHE = ROOT / "data" / "exports" / "strict_replay.parquet"

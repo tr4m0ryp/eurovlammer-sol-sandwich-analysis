@@ -14,6 +14,7 @@ import time
 from pathlib import Path
 
 import orjson
+
 from sol_mev.config import ROOT
 
 PAGE = Path(__file__).parent / "page"

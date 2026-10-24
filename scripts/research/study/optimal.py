@@ -14,11 +14,10 @@ Three gates, each measured rather than assumed (data/screener.duckdb):
 """
 from __future__ import annotations
 
-from pathlib import Path
-
 import duckdb
 import numpy as np
 from sklearn.isotonic import IsotonicRegression
+
 from sol_mev.config import ROOT
 
 DB = ROOT / "data" / "screener.duckdb"

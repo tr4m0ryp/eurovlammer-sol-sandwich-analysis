@@ -19,6 +19,7 @@ import argparse
 from pathlib import Path
 
 import duckdb
+
 from sol_mev.config import ROOT
 
 OUT = ROOT / "data" / "screener.duckdb"
@@ -45,14 +46,14 @@ def consolidate(since_run: str, out: Path = OUT) -> None:
         for i in range(len(runs)):
             con.execute(f"detach database if exists r{i}")
     con.executemany("insert into runs values (?, ?)", [[r.name, str(r)] for r in runs])
-    con.execute(f"""create or replace table risk as
+    con.execute("""create or replace table risk as
         select * exclude (top10_live) from (select *, row_number() over (partition by signature, ev_index order by run_id) k from risk) where k = 1""")
     con.execute("alter table risk drop column k")
     con.execute("alter table risk add column gain_unbounded boolean")
     con.execute(f"update risk set gain_unbounded = coalesce(mesp_best > {GAIN_SANE}, false)")
     con.execute("update risk set mesp_best = null, mesp = null, mesp_ref = null, gain_pct = null, gain_roi = null where gain_unbounded")
     q90 = con.execute("select quantile_cont(mesp_best, 0.9) from risk").fetchone()[0]
-    con.execute(f"alter table risk add column top10 boolean")
+    con.execute("alter table risk add column top10 boolean")
     con.execute(f"update risk set top10 = coalesce(mesp_best >= {q90}, false)")
     swap_files = [str(p) for r in runs for p in (r / "swaps").glob("*.parquet")]
     if swap_files:

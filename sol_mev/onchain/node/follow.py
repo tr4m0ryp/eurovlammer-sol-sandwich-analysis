@@ -15,10 +15,10 @@ from typing import AsyncIterator
 
 import orjson
 
+from sol_mev.measure.exposure.mesp import exposure
 from sol_mev.onchain.decode.programs import PUMP, PUMPSWAP
 from sol_mev.onchain.decode.swaps import decode_tx
 from sol_mev.onchain.decode.tx import account_keys
-from sol_mev.measure.exposure.mesp import exposure
 from sol_mev.onchain.node.rpc import RpcPool
 
 MAX_INFLIGHT = 24

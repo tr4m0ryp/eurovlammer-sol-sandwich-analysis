@@ -13,9 +13,8 @@ import json
 import math
 import random
 import sys
-from pathlib import Path
 
-from scripts.finetune.backtest import build_replay, load_strict, run, run_expected, run_mc
+from scripts.finetune.backtest import build_replay, load_strict, run_mc
 from sol_mev.config import ROOT
 
 MC_SEEDS = 5                      # seeds per evaluation during the fast search/refine

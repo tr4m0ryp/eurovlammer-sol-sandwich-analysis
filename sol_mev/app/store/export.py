@@ -13,8 +13,8 @@ import datetime as dt
 from pathlib import Path
 
 import duckdb
-from sol_mev.config import ROOT
 
+from sol_mev.config import ROOT
 
 
 def export(since: str, out_dir: Path = ROOT / "data" / "exports") -> Path:

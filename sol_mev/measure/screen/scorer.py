@@ -15,8 +15,14 @@ import lightgbm as lgb
 import numpy as np
 import pandas as pd
 
-from sol_mev.measure.exposure.features import (CTX_SLOTS, FEATURES, POOL_HIST_SLOTS, SETTLE_SLOTS, WALLET_SLOTS,
-                                base_features)
+from sol_mev.measure.exposure.features import (
+    CTX_SLOTS,
+    FEATURES,
+    POOL_HIST_SLOTS,
+    SETTLE_SLOTS,
+    WALLET_SLOTS,
+    base_features,
+)
 
 
 class Context:

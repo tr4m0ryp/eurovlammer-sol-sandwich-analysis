@@ -12,8 +12,6 @@ from __future__ import annotations
 import argparse
 import json
 import statistics
-import sys
-from pathlib import Path
 
 from scripts.finetune import sweep
 from scripts.finetune.backtest import build_replay, load_strict, run, run_expected, split_replay
