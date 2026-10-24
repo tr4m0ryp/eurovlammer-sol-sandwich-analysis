@@ -46,14 +46,6 @@ class Labeler:
         self._bots_age += 1
         return self._bots
 
-    def bots(self) -> set[str]:
-        """Known plus session-qualified attackers, rebuilt every 64 blocks (it is read every block)."""
-        if self._bots is None or self._bots_age >= 64:
-            self._bots = self.known_bots | {w for w in self.att if self.is_bot(w)}
-            self._bots_age = 0
-        self._bots_age += 1
-        return self._bots
-
     def push(self, slot: int, rows: list[dict]) -> tuple[int, list[Sandwich]]:
         """Add one block; returns (settled slot, sandwiches whose front leg starts there)."""
         sw = [Swap(**{k: r[k] for k in _FIELDS}) for r in rows]
