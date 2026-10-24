@@ -1,81 +1,91 @@
-// Record the live dashboard (a real `python3 . live` run against Solana mainnet) as a ~60 s
-// scripted walkthrough. Nothing is mocked: every row comes from the running screener's API.
+// Record a ~60 s walkthrough of the live dry-run dashboard into docs/research/figures/readme/.
 //
-//   NODE_PATH=<dir with playwright> node scripts/figures/video/record.mjs <url> <out_dir>
-//
-// Writes <out_dir>/raw.webm and <out_dir>/meta.json (first/last slot, UTC start) for the caption.
-import fs from "node:fs";
+// Prerequisite: the screener running against Solana mainnet (real data only), for ~25 min first:
+//   python3 . live [--config F.toml]
+// Usage (playwright from any local install, e.g. NODE_PATH=<dir>/node_modules):
+//   node scripts/figures/video/record.mjs [--live http://127.0.0.1:8765]
+import { execFileSync } from "node:child_process";
+import { mkdirSync, mkdtempSync, readdirSync } from "node:fs";
+import os from "node:os";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { createRequire } from "node:module";
+import { caption, cardHtml, clickTab } from "./overlay.mjs";
 
 const require = createRequire(import.meta.url);
 const { chromium } = require("playwright");
-
-const [url = "http://127.0.0.1:8781/", outDir = "video-out"] = process.argv.slice(2);
+const REPO = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../..");
+const OUT = path.join(REPO, "docs/research/figures/readme");
 const SIZE = { width: 1600, height: 900 };
-const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const arg = (k, d) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : d; };
+const LIVE = arg("--live", "http://127.0.0.1:8765");
+const hold = (page, s) => page.waitForTimeout(s * 1000);
+const snap = async (parts) => (await fetch(`${LIVE}/api/snapshot?parts=${parts}`)).json();
+const fmtInt = (n) => Math.round(n || 0).toLocaleString("en-US");
+const seg = (page, v) => page.click(`.seg[data-sl="view"] button[data-v="${v}"]`);
 
-async function stats() {
-  const r = await fetch(new URL("api/snapshot?parts=stats", url));
-  return (await r.json()).stats;
-}
+async function scenes(page) {
+  const start = (await snap("stats")).stats;
+  const day = new Date().toISOString().slice(0, 10);
+  await page.setContent(cardHtml({
+    title: "trenches-sol",
+    sub: `Live dry-run on Solana mainnet, ${day}. Real blocks, real swaps; nothing is signed or sent.`,
+    note: "Thesis research (analysis only): which pump.fun and PumpSwap trades get sandwiched, and why?",
+  }));
+  await hold(page, 5);
 
-// A small honest caption in the empty header strip: what this is and which live slots it shows.
-async function caption(page, startSlot) {
-  await page.evaluate((s0) => {
-    const el = document.createElement("div");
-    el.id = "rec-caption";
-    el.style.cssText = "position:fixed;top:27px;left:50%;transform:translateX(-50%);z-index:99;padding:6px 12px;"
-      + "border-radius:8px;font:500 12px/16px Geist,system-ui,sans-serif;color:#fff;background:rgba(20,24,40,.85)";
-    document.body.appendChild(el);
-    const tick = async () => {
-      const st = (await (await fetch("api/snapshot?parts=stats")).json()).stats;
-      el.textContent = `Live dry run, Solana mainnet, slots ${s0.toLocaleString()}-${st.slot.toLocaleString()},`
-        + ` ${st.swaps.toLocaleString()} swaps, nothing traded`;
-    };
-    tick();
-    setInterval(tick, 1000);
-  }, startSlot);
-}
+  await page.goto(LIVE);
+  await page.waitForSelector("#strict-live-rows tr:not([data-empty])", { timeout: 60_000 });
+  await caption(page, "Every confirmed slot is decoded and scored; strict rows are real buys a 0.5 SOL attacker could have sandwiched");
+  await hold(page, 15);
+  await seg(page, "high_roi");
+  await caption(page, "Filter: return on the front-run leg of at least 5%, priced on the exact constant-product curve");
+  await hold(page, 6);
+  await seg(page, "frequent");
+  await caption(page, "Filter: pools with repeated strict targets; attackers camp on pools with recent same-side flow");
+  await hold(page, 6);
+  await seg(page, "");
+  await page.evaluate(() => document.querySelector('[data-panel="strict"] .tbl-scroll')?.scrollBy({ top: 600, behavior: "smooth" }));
+  await caption(page, "Each flag is settled 14 slots later against the sandwiches that actually landed on chain");
+  await hold(page, 8);
 
-async function scroll(page, selector, px, steps = 12) {
-  for (let i = 0; i < steps; i++) {
-    await page.evaluate(([s, d]) => document.querySelector(s)?.scrollBy({ top: d, behavior: "smooth" }), [selector, px / steps]);
-    await sleep(250);
-  }
+  await clickTab(page, "wallet");
+  await caption(page, "Simulated wallet: commits by the allocation rule, then settles on the observed sandwich feed");
+  await hold(page, 10);
+
+  const { stats: end } = await snap("stats");
+  const settled = end.settled_flags || 0;
+  await page.setContent(cardHtml({
+    title: "This recording, measured",
+    sub: `${fmtInt(end.slots)} slots followed live, slots ${fmtInt(start.slot)} to ${fmtInt(end.slot)} (${new Date().toISOString().slice(0, 16).replace("T", " ")} UTC)`,
+    stats: [
+      [fmtInt(end.swaps), "swaps decoded and scored"],
+      [fmtInt(end.sandwiches), "real sandwiches detected"],
+      [settled ? ((100 * end.flag_hits) / settled).toFixed(1) + "%" : "n/a", "of settled flags were real victims"],
+      [fmtInt(end.strict_vis?.strict), "strict targets"],
+    ],
+    note: "Dry-run only. Sandwich attacks harm the traders they target; this measures, it does not trade.",
+  }));
+  await hold(page, 8);
 }
 
 async function main() {
-  fs.mkdirSync(outDir, { recursive: true });
+  const tmp = mkdtempSync(path.join(os.tmpdir(), "rec-"));
   const browser = await chromium.launch();
-  const context = await browser.newContext({ viewport: SIZE, recordVideo: { dir: outDir, size: SIZE } });
-  const page = await context.newPage();
-  const t0 = new Date().toISOString();
-  const first = await stats();
-  await page.goto(url, { waitUntil: "networkidle" });
-  await page.waitForSelector("#strict-live-rows tr:not([data-empty])", { timeout: 60_000 });
-  await caption(page, first.slot);
-
-  await sleep(14_000);                                              // scene 1: the live strict stream
-  const seg = (v) => page.click(`.seg[data-sl="view"] button[data-v="${v}"]`);
-  await seg("high_roi"); await sleep(6_000);                        // scene 2: ROI >= 5%
-  await seg("frequent"); await sleep(6_000);                        // scene 3: repeat pools
-  await seg(""); await sleep(1_500);
-  await scroll(page, '[data-panel="strict"] .tbl-scroll', 900);     // scene 4: the target table
-  await sleep(2_000);
-  await page.click('#tabs .tab[data-tab="wallet"]'); await sleep(8_000);   // scene 5: simulated wallet
-  await scroll(page, "main", 700); await sleep(5_000);
-  await page.click('#tabs .tab[data-tab="strict"]'); await sleep(6_000);   // scene 6: back to the stream
-
-  const last = await stats();
-  const video = page.video();
-  await context.close();
+  const ctx = await browser.newContext({ viewport: SIZE, recordVideo: { dir: tmp, size: SIZE } });
+  const page = await ctx.newPage();
+  await scenes(page);
+  await ctx.close();
   await browser.close();
-  fs.renameSync(await video.path(), path.join(outDir, "raw.webm"));
-  fs.writeFileSync(path.join(outDir, "meta.json"), JSON.stringify(
-    { started_utc: t0, first_slot: first.slot, last_slot: last.slot, swaps: last.swaps,
-      sandwiches: last.sandwiches, flags: last.flags }, null, 1));
-  console.log(`recorded slots ${first.slot}..${last.slot}`);
+  const webm = path.join(tmp, readdirSync(tmp).find((f) => f.endsWith(".webm")));
+  mkdirSync(OUT, { recursive: true });
+  const mp4 = path.join(OUT, "platform.mp4");
+  execFileSync("ffmpeg", ["-y", "-loglevel", "error", "-i", webm, "-c:v", "libx264", "-preset", "slow",
+    "-crf", "26", "-pix_fmt", "yuv420p", "-movflags", "+faststart", mp4]);
+  execFileSync("ffmpeg", ["-y", "-loglevel", "error", "-i", mp4, "-vf",
+    "fps=8,scale=960:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=96[p];[b][p]paletteuse=dither=bayer:bayer_scale=4",
+    path.join(OUT, "platform-preview.gif")]);
+  console.log(`wrote ${mp4} and platform-preview.gif (${tmp}/${path.basename(webm)} kept)`);
 }
 
 main().catch((e) => { console.error(e); process.exit(1); });
