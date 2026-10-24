@@ -5,8 +5,7 @@ import json
 
 from aiohttp.test_utils import TestClient, TestServer
 
-from sol_mev.app.dashboard import Hub
-from sol_mev.app.dashboard import server
+from sol_mev.app.dashboard import Hub, server
 
 
 def test_routes_and_clean_shutdown(tmp_path, monkeypatch):
