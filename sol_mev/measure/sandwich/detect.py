@@ -18,7 +18,7 @@ from __future__ import annotations
 from collections import defaultdict
 from dataclasses import dataclass, field
 
-from ..chain.swaps.model import Swap
+from sol_mev.onchain.decode.swaps.model import Swap
 
 WINDOW_SLOTS = 8
 LO, HI = 0.5, 1.01

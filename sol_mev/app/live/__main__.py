@@ -7,7 +7,7 @@ import signal
 import tomllib
 from pathlib import Path
 
-from . import ROOT, main
+from sol_mev.app.live import ROOT, main
 
 
 async def _until_term(coro) -> None:

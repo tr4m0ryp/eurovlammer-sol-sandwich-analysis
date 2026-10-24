@@ -15,8 +15,8 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass
 
-from ..chain.swaps.model import EXACT_IN, EXACT_OUT, Swap
-from .curve import net_for_tokens, sol_for_tokens, tokens_for_net
+from sol_mev.onchain.decode.swaps.model import EXACT_IN, EXACT_OUT, Swap
+from sol_mev.measure.exposure.curve import net_for_tokens, sol_for_tokens, tokens_for_net
 
 GOLD = (math.sqrt(5) - 1) / 2
 # Attacker capital per front leg. Real fronts (5 h of entity-filtered sandwiches, 2026-10-14): median

@@ -1,5 +1,5 @@
 """Local web surface for the live screener."""
-from .hub import Hub
-from .server import serve
+from sol_mev.app.dashboard.hub import Hub
+from sol_mev.app.dashboard.server import serve
 
 __all__ = ["Hub", "serve"]

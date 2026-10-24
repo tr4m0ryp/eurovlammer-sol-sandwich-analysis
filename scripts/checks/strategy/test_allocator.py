@@ -1,7 +1,7 @@
 """The allocation engine keeps wealth accounting exact and never breaches the exposure cap."""
 import random
 
-from tsol.engine import Allocator
+from sol_mev.strategy import Allocator
 
 
 def _row(i, slot, kappa, roi, pool="p"):

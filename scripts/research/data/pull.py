@@ -18,8 +18,8 @@ from pathlib import Path
 
 import orjson
 
-from tsol.chain.programs import PUMP, PUMPSWAP
-from tsol.ingest.rpc import default_pool
+from sol_mev.onchain.decode.programs import PUMP, PUMPSWAP
+from sol_mev.onchain.node.rpc import default_pool
 
 KEEP = (PUMP, PUMPSWAP)
 

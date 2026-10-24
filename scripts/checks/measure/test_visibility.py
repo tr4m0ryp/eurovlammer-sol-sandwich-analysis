@@ -2,9 +2,9 @@
 import asyncio
 import itertools
 
-from tsol.screen.visibility import LiveVisibility, tier
-from tsol.screen.visibility.strict import FREQ_WINDOW, StrictVisibility
-from tsol.serve.hub import Hub
+from sol_mev.measure.screen.visibility import LiveVisibility, tier
+from sol_mev.measure.screen.visibility.strict import FREQ_WINDOW, StrictVisibility
+from sol_mev.app.dashboard.hub import Hub
 
 
 def _old_tier(lag: int, tipped: bool, routed: bool) -> str:

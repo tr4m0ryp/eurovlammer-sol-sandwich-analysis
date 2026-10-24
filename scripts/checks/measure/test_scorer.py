@@ -7,9 +7,9 @@ import orjson
 import pandas as pd
 import pytest
 
-from tsol.ingest.follow import decode_block
-from tsol.metrics.features import context_features
-from tsol.screen.scorer import Context
+from sol_mev.onchain.node.follow import decode_block
+from sol_mev.measure.exposure.features import context_features
+from sol_mev.measure.screen.scorer import Context
 
 RAW = sorted(Path("data/raw/blocks_20261014").glob("*.jsonl.gz"))
 

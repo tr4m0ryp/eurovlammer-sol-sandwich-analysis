@@ -1,8 +1,8 @@
 """Exposure math and cross-slot sandwich detection on synthetic swaps."""
-from tsol.chain.swaps.model import Swap
-from tsol.metrics.exposure import exposure
-from tsol.metrics.features import base_features
-from tsol.metrics.sandwich import find
+from sol_mev.onchain.decode.swaps.model import Swap
+from sol_mev.measure.exposure.mesp import exposure
+from sol_mev.measure.exposure.features import base_features
+from sol_mev.measure.sandwich.detect import find
 
 X, Y = 100e9, 1e15
 

@@ -27,9 +27,9 @@ from pathlib import Path
 
 import duckdb
 import pandas as pd
-from tsol.chain.swaps.model import Swap
-from tsol.engine.allocator import Allocator
-from tsol.metrics.exposure import exposure
+from sol_mev.onchain.decode.swaps.model import Swap
+from sol_mev.strategy.allocator import Allocator
+from sol_mev.measure.exposure.mesp import exposure
 
 ROOT = Path(__file__).resolve().parents[2]
 DB = ROOT / "data" / "screener.duckdb"

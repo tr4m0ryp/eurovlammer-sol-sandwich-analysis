@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from collections import Counter, deque
 
-from .tier import interesting, out_row, tier
+from sol_mev.measure.screen.visibility.tier import interesting, out_row, tier
 
 
 class LiveVisibility:

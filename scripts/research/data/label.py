@@ -17,9 +17,9 @@ import duckdb
 import numpy as np
 import pandas as pd
 
-from tsol.chain.swaps.model import Swap
-from tsol.metrics.exposure import exposure
-from tsol.metrics.sandwich import entity_filter, find
+from sol_mev.onchain.decode.swaps.model import Swap
+from sol_mev.measure.exposure.mesp import exposure
+from sol_mev.measure.sandwich.detect import entity_filter, find
 
 SWAP_COLS = [f.name for f in fields(Swap)]
 

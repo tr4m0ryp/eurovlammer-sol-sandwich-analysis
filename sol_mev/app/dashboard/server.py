@@ -15,7 +15,7 @@ from pathlib import Path
 import orjson
 from aiohttp import web
 
-from .hub import Hub
+from sol_mev.app.dashboard.hub import Hub
 
 PAGE = Path(__file__).parent / "page"
 DOCS = Path(__file__).resolve().parents[2] / "data" / "artifact"

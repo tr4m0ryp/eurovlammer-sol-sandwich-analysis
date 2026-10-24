@@ -1,5 +1,5 @@
 """Risk book: gas floor, attacker-state MESP for victims, gain shares, top-10% mark."""
-from tsol.screen.risk import RiskBook
+from sol_mev.measure.screen.risk import RiskBook
 
 
 def row(sig, mesp, sol=1e9, front=5e8):

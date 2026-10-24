@@ -13,13 +13,13 @@ from pathlib import Path
 
 import aiohttp
 
-from ..ingest.follow import Follower
-from ..ingest.rpc import default_pool
-from ..screen import Labeler, Scorer
-from ..serve import Hub, serve
-from ..serve.artifact import snapshot
-from ..store import Store
-from .pipeline import Pipeline
+from sol_mev.onchain.node.follow import Follower
+from sol_mev.onchain.node.rpc import default_pool
+from sol_mev.measure.screen import Labeler, Scorer
+from sol_mev.app.dashboard import Hub, serve
+from sol_mev.app.dashboard.artifact import snapshot
+from sol_mev.app.store import Store
+from sol_mev.app.live.pipeline import Pipeline
 
 ROOT = Path(__file__).resolve().parents[2]
 PUSH_EVERY_S = 60           # artifact snapshot cadence (one database write per push)

@@ -11,7 +11,7 @@ from typing import Iterator
 
 import base58
 
-from .programs import COMPUTE_BUDGET, JITO_TIP, SYSTEM
+from sol_mev.onchain.decode.programs import COMPUTE_BUDGET, JITO_TIP, SYSTEM
 
 BASE_FEE_PER_SIG = 5000
 
