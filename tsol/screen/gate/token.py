@@ -1,7 +1,7 @@
-"""Pre-trade safety checks: the rug-pull / balance-lock guardrails.
+"""Token safety: the rug-pull / balance-lock vectors a mint carries on chain.
 
-Before committing to a front-run the executor rejects tokens a malicious deployer can use to steal or
-freeze the position. Both SPL (Tokenkeg) and Token-2022 mints share the 82-byte base layout, so the
+Flags tokens whose deployer can mint more supply, freeze balances, or lock and tax transfers, so the
+screener can separate opportunities that are merely visible from ones that are also safe to hold. Both SPL (Tokenkeg) and Token-2022 mints share the 82-byte base layout, so the
 authority checks cover both; Token-2022 extensions (transfer hook, non-transferable, transfer fee)
 are scanned from the base onward.
 """
