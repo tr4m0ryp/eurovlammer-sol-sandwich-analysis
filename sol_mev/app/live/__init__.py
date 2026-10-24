@@ -3,7 +3,7 @@ sandwicher would pick, and settle each flag against the real sandwiches ``SETTLE
 Read-only on chain: nothing here signs or submits a transaction.
 
     set -a; . ./.env; set +a
-    .venv/bin/python -m tsol.run            # page on http://127.0.0.1:8765
+    python3 . live            # page on http://127.0.0.1:8765
 """
 from __future__ import annotations
 
@@ -20,8 +20,8 @@ from sol_mev.app.dashboard import Hub, serve
 from sol_mev.app.dashboard.artifact import snapshot
 from sol_mev.app.store import Store
 from sol_mev.app.live.pipeline import Pipeline
+from sol_mev.config import ROOT
 
-ROOT = Path(__file__).resolve().parents[2]
 PUSH_EVERY_S = 60           # artifact snapshot cadence (one database write per push)
 
 

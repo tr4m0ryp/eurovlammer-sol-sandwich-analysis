@@ -4,7 +4,7 @@ Each block is one JSON line: slot, block_time, leader, n_tx (all, votes included
 transactions with their true in-block index. Raw records are the ground truth for the sandwich
 labels, so nothing is decoded or dropped here beyond the venue filter.
 
-    .venv/bin/python -m research.sandwich.pull --slots 27000 --out data/raw/blocks_20261014
+    python3 . pull --slots 27000 --out data/raw/blocks_20261014
 """
 from __future__ import annotations
 

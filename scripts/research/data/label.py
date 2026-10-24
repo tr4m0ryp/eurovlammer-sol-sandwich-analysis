@@ -4,7 +4,7 @@ Exposure is measured at the attacker-free state: for a victim, the pool state ju
 first front-run swap; for everything else, its own pre-state. Output: one Parquet with every swap,
 its role (front / back / victim / ""), the sandwich key, the attacker, and slack + MESP.
 
-    .venv/bin/python -m research.sandwich.label --swaps data/interim/swaps_20261014 --out data/interim/labels_20261014.parquet
+    python3 . label --swaps data/interim/swaps_20261014 --out data/interim/labels_20261014.parquet
 """
 from __future__ import annotations
 

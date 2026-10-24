@@ -10,7 +10,7 @@ Three gates, each measured rather than assumed (data/screener.duckdb):
                 base fees + priority fees + tips) is positive.
 **Optimal** = the qualified rows in the top decile of calibrated net gain.
 
-    .venv/bin/python -m research.sandwich.optimal
+    python3 . optimal
 """
 from __future__ import annotations
 
@@ -19,8 +19,8 @@ from pathlib import Path
 import duckdb
 import numpy as np
 from sklearn.isotonic import IsotonicRegression
+from sol_mev.config import ROOT
 
-ROOT = Path(__file__).resolve().parents[2]
 DB = ROOT / "data" / "screener.duckdb"
 
 

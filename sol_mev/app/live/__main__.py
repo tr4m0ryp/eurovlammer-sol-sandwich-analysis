@@ -1,4 +1,4 @@
-"""``python -m tsol.run [--config configs/live.toml]``"""
+"""``python3 . live [--config configs/live.toml]``"""
 from __future__ import annotations
 
 import argparse

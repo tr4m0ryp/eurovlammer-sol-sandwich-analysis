@@ -7,5 +7,5 @@ exec 9>logs/live.lock
 flock -n 9 || exit 0
 set -a; . ./.env; set +a
 echo "[$(date -u +%FT%TZ)] boot" >> logs/live_boot.log
-.venv/bin/python -m tsol.run >> logs/live.log 2>&1
+.venv/bin/python . live >> logs/live.log 2>&1
 echo "[$(date -u +%FT%TZ)] exit $?" >> logs/live_boot.log

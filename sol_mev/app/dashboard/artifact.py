@@ -5,7 +5,7 @@ the script subscribes to ``live/snapshot`` in the artifact database. ``snapshot`
 document's body to disk and prints ``PUSH <path>``: the Claude session relaying the run turns each
 line into one database write (the artifact cannot reach this machine).
 
-    .venv/bin/python -m tsol.serve.artifact      # writes data/artifact/sandwich_screener.html
+    python3 . artifact      # writes data/artifact/sandwich_screener.html
 """
 from __future__ import annotations
 
@@ -14,9 +14,9 @@ import time
 from pathlib import Path
 
 import orjson
+from sol_mev.config import ROOT
 
 PAGE = Path(__file__).parent / "page"
-ROOT = Path(__file__).resolve().parents[2]
 N_FLAGS, N_SANDS, N_RISK = 120, 50, 150
 
 

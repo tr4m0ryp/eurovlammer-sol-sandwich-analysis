@@ -4,7 +4,7 @@ The artifact cannot open a local file, so the analysis data is shipped as docume
 ``night/summary`` (totals, size-vs-MC deciles, hourly counts) and ``night/rows_NNN`` chunks of the
 risk rows as compact arrays (column order in ``summary.columns``), each under the 256 KiB cap.
 
-    .venv/bin/python -m tsol.store.artifact_push      # writes data/artifact/night/*.json
+    python3 . push-night      # writes data/artifact/night/*.json
 """
 from __future__ import annotations
 
@@ -12,8 +12,8 @@ import json
 from pathlib import Path
 
 import duckdb
+from sol_mev.config import ROOT
 
-ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "data" / "artifact" / "night"
 ROWS_PER_DOC = 900
 COLS = ["signature", "slot", "block_time", "venue", "sol", "mc_sol", "size_mc_pct", "fee_bps", "slack",

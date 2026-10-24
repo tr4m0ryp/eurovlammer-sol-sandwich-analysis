@@ -1,6 +1,6 @@
 """One DuckDB file for the analysis: the night's live runs plus the 24 h research labels.
 
-    .venv/bin/python -m tsol.store.consolidate --since-run live_20261014_184148
+    python3 . consolidate --since-run live_20261014_184148
 
 Tables (``data/screener.duckdb``):
   risk              every settled risk buy (buy-side, gain above the two-transaction gas), one row per
@@ -19,8 +19,8 @@ import argparse
 from pathlib import Path
 
 import duckdb
+from sol_mev.config import ROOT
 
-ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "data" / "screener.duckdb"
 GAIN_SANE = 1e12      # 1,000 SOL of overpayment on one memecoin buy: only the u64 "no limit" sentinel
 

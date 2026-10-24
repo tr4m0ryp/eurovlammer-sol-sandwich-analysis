@@ -1,6 +1,6 @@
 """Stage 1: decode pulled blocks into one swap table (Parquet per chunk), no labels yet.
 
-    .venv/bin/python -m research.sandwich.scan --raw data/raw/blocks_20261014 --out data/interim/swaps_20261014
+    python3 . scan --raw data/raw/blocks_20261014 --out data/interim/swaps_20261014
 """
 from __future__ import annotations
 

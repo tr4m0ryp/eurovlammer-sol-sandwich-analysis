@@ -7,14 +7,14 @@ universe is rebuilt from the ``swaps`` table (which already carries the live sco
 math: ``interesting`` → unshielded (visible) → budget-capped ``exposure(swap, capital=0.5 SOL)`` →
 ``mesp >= MIN_PROFIT`` and ``roi >= MIN_ROI``. The per-pool ``pool_freq`` is recomputed in slot order.
 
-``run()`` also applies the three tunable *opportunity-risk* gates from ``tsol/screen/gate/opportunity.py``
+``run()`` also applies the three tunable *opportunity-risk* gates from ``sol_mev/measure/screen/gate/opportunity.py``
 (slippage / counterparty-p / priority-fee) as a pre-commit filter, matching the intended pipeline.
 The token-safety gate (mint/freeze authority, transfer-hook) is a fixed RPC check that cannot be
 rebuilt offline; it is orthogonal to the 12 tuned knobs and out of scope.
 
 Usage:
-    .venv/bin/python -m scripts.finetune.backtest --cache             # rebuild strict_replay.parquet
-    .venv/bin/python -m scripts.finetune.backtest --vector '{"MIN_P":0.1}'
+    python3 . backtest --cache             # rebuild strict_replay.parquet
+    python3 . backtest --vector '{"MIN_P":0.1}'
 """
 from __future__ import annotations
 
@@ -30,8 +30,8 @@ import pandas as pd
 from sol_mev.onchain.decode.swaps.model import Swap
 from sol_mev.strategy.allocator import Allocator
 from sol_mev.measure.exposure.mesp import exposure
+from sol_mev.config import ROOT
 
-ROOT = Path(__file__).resolve().parents[2]
 DB = ROOT / "data" / "screener.duckdb"
 CACHE = ROOT / "data" / "exports" / "strict_replay.parquet"
 
@@ -153,7 +153,7 @@ def split_replay(replay: dict, frac: float = 0.8) -> tuple[dict, dict]:
     return train, hold
 
 
-# Default opportunity-risk gate thresholds (mirror tsol/screen/gate/opportunity.py defaults).
+# Default opportunity-risk gate thresholds (mirror sol_mev/measure/screen/gate/opportunity.py defaults).
 RISK_DEFAULTS = {"MAX_SLIPPAGE_FRAC": 0.05, "MIN_COUNTERPARTY_P": 0.02, "MAX_PRIORITY_FEE": 1_000_000}
 
 

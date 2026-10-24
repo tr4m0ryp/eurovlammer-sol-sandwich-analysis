@@ -5,7 +5,7 @@ deterministic *expected* P&L, then the top candidates are re-scored with a Monte
 seeds — because the engine's profit is dominated by a few rare large-MESP ("whale") targets whose
 commitment is path-dependent, so a single trajectory is misleading.
 
-    .venv/bin/python -m scripts.finetune.report --n 1500 --seeds 20
+    python3 . report --n 1500 --seeds 20
 """
 from __future__ import annotations
 
@@ -15,14 +15,13 @@ import statistics
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-import sweep  # noqa: E402
-from backtest import build_replay, load_strict, run, run_expected, split_replay  # noqa: E402
-from sweep import REFERENCE  # noqa: E402
+from scripts.finetune import sweep
+from scripts.finetune.backtest import build_replay, load_strict, run, run_expected, split_replay
+from scripts.finetune.sweep import REFERENCE
+from sol_mev.config import ROOT
 
-ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "data" / "exports" / "finetune"
-REPORT = ROOT / "notes" / "finetune-report.md"
+REPORT = ROOT / "docs" / "research" / "finetune-report.md"
 
 WIN_RATES = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
 CAPTURES = {"size-dependent (0.19/0.6)": None, "0.19": 0.19, "0.25": 0.25, "0.40": 0.40, "0.60": 0.60}

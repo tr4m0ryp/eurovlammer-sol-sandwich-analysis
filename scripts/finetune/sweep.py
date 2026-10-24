@@ -3,8 +3,8 @@
 Searches the *selection* knobs (which targets to commit and how large) at a reference *resolution*
 (WIN_RATE / CAPTURE_FRACTION / TIP_LAMPORTS), then reports the resolution sensitivity analytically.
 
-    .venv/bin/python -m scripts.finetune.sweep --n 1500            # random search
-    .venv/bin/python -m scripts.finetune.sweep --refine            # coordinate descent on the best
+    python3 . sweep --n 1500            # random search
+    python3 . sweep --refine            # coordinate descent on the best
 """
 from __future__ import annotations
 
@@ -15,12 +15,11 @@ import random
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-from backtest import build_replay, load_strict, run, run_expected, run_mc  # noqa: E402
+from scripts.finetune.backtest import build_replay, load_strict, run, run_expected, run_mc
+from sol_mev.config import ROOT
 
 MC_SEEDS = 5                      # seeds per evaluation during the fast search/refine
 
-ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "data" / "exports" / "finetune"
 
 # Ranges (prompt suggestions).

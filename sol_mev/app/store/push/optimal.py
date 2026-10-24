@@ -3,7 +3,7 @@
 Reads the ``optimal`` table (research/sandwich/optimal.py) from ``data/screener.duckdb`` and writes
 ``data/artifact/optimal/summary.json`` plus ``rows_NNN.json`` chunks (compact arrays).
 
-    .venv/bin/python -m tsol.store.optimal_push
+    python3 . push-optimal
 """
 from __future__ import annotations
 
@@ -11,8 +11,8 @@ import json
 from pathlib import Path
 
 import duckdb
+from sol_mev.config import ROOT
 
-ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "data" / "artifact" / "optimal"
 ROWS_PER_DOC = 900
 HOT = -2.071          # log10 prior same-side flow / reserve: the tree's split (0.85% of the pool)

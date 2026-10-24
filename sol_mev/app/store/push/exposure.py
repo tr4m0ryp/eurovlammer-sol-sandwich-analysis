@@ -5,7 +5,7 @@ optimal set, the attacked rate under each protection a buyer actually controls (
 protected submission, a routed order), and the attacked rate by prior pool momentum. No capture, no
 execution: this is the defensive mirror of the Optimal patterns.
 
-    .venv/bin/python -m tsol.store.exposure_push
+    python3 . push-exposure
 """
 from __future__ import annotations
 
@@ -13,8 +13,8 @@ import json
 from pathlib import Path
 
 import duckdb
+from sol_mev.config import ROOT
 
-ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "data" / "artifact" / "exposure"
 ROUTED = ("JUP6LkbZ", "6Vo3245e", "term9YPb")      # routers with the lowest attacked rate in the data
 

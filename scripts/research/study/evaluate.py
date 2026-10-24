@@ -6,7 +6,7 @@ Two views of the features:
   attacker  pool state just before the front-run (what the attacker priced against);
   screener  the swap's own pre-state (what a post-inclusion screener sees, front-run included).
 
-    .venv/bin/python -m research.sandwich.evaluate --labels data/interim/labels_20261014.parquet
+    python3 . evaluate --labels data/interim/labels_20261014.parquet
 """
 from __future__ import annotations
 

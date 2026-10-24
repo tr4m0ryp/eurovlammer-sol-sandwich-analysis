@@ -12,7 +12,7 @@ Three visibility tiers:
 The tab shows only orders with at least medium visibility — the ones an attacker could plausibly
 have seen before inclusion.
 
-    .venv/bin/python -m tsol.store.visibility_push
+    python3 . push-visibility
 """
 from __future__ import annotations
 
@@ -20,8 +20,8 @@ import json
 from pathlib import Path
 
 import duckdb
+from sol_mev.config import ROOT
 
-ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "data" / "artifact" / "visibility"
 ROWS_PER_DOC = 900
 AGGREGATORS = ("JUP6LkbZ", "6Vo3245e", "term9YPb", "L2TExMFKdjpN")
