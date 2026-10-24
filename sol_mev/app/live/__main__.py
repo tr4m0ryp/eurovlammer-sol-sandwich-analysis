@@ -7,7 +7,8 @@ import signal
 import tomllib
 from pathlib import Path
 
-from sol_mev.app.live import ROOT, main
+from sol_mev.app.live import main
+from sol_mev.config import LIVE
 
 
 async def _until_term(coro) -> None:
@@ -25,5 +26,6 @@ async def _until_term(coro) -> None:
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("--config", type=Path, default=ROOT / "configs" / "live.toml")
-    asyncio.run(_until_term(main(tomllib.loads(ap.parse_args().config.read_text()))))
+    ap.add_argument("--config", type=Path, default=None, help="TOML overriding sol_mev.config.LIVE")
+    path = ap.parse_args().config
+    asyncio.run(_until_term(main(tomllib.loads(path.read_text()) if path else LIVE)))

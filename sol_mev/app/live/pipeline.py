@@ -11,7 +11,8 @@ import aiohttp
 
 from sol_mev.strategy import Allocator
 from sol_mev.measure.exposure.mesp import exposure
-from sol_mev.measure.screen import Labeler, Scorer
+from sol_mev.measure.sandwich import Labeler
+from sol_mev.measure.screen import Scorer
 from sol_mev.measure.screen.gate import check_tokens, event_risks, gate
 from sol_mev.measure.screen.risk import KEEP as RISK_KEEP, RiskBook
 from sol_mev.measure.screen.visibility import LiveVisibility, StrictVisibility
