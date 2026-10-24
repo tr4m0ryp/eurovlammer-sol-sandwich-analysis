@@ -164,7 +164,7 @@ behind the tip.
 
 **Label.** $`y = 1`$ when a swap was a victim of an H3 attacker. The universe
 is every swap that is not itself a leg and not sent by a detected attacker.
-The base rate is about 1.1%.
+The weighted base rate on the 24 hour day is 0.65%.
 
 **Features.** 21 per-swap numbers, computed by the same vectorised code
 offline and live. Context windows only look at strictly earlier swaps, so a
@@ -299,8 +299,9 @@ sandwich feed, never a coin flip on whether a sandwich happened:
 \qquad c(\pi) = \begin{cases} 0.19 & \pi \ge 0.01\ \text{SOL}\\ 0.6 & \text{otherwise}\end{cases}
 ```
 
-The capture share $`c(\pi)`$ comes from section 6: attackers realise 11 to 27%
-of predicted MESP above 0.01 SOL. The race win rate $`W`$ cannot be observed
+The capture share $`c(\pi)`$ comes from section 6: along the fitted curve,
+attackers realise 4 to 20% of predicted MESP above 0.01 SOL, and 0.19 sits at
+the top of that range. The race win rate $`W`$ cannot be observed
 from public data, so it is swept, not fitted.
 
 ## How well it works
@@ -327,7 +328,7 @@ number, is near chance. Second, phi is the best property of a single swap,
 and the model's gain over it comes from context: pool flow and pool attack
 history carry the most split gain (about 620k and 607k). At the deployed
 threshold the model flags 2% of swaps at **18.8% precision and 49.6%
-recall**, against a 1.1% base rate.
+recall**, against a 0.65% base rate: a 29x lift in precision.
 
 ### The scores mean what they say, up to about 0.15
 
@@ -351,20 +352,21 @@ overconfident by about a fifth: score 0.243 against 0.197 observed, and
 
 Below about 0.0001 SOL attackers realise **more** than the single-victim
 prediction (they also eat other flow in the same window). Above 0.01 SOL
-they realise only 11 to 27% of it: they front-run small, not maximally.
+they realise only 4 to 20% of it along the fitted curve: they front-run
+small, not maximally.
 Over one night of 78,143 risk buys, 6,311 qualified as optimal targets, and
 those were sandwiched **less** often than other profitable buys (7.4% vs
 8.3%). Attackers select on flow and visibility, not on extractable value.
 
 ### Protection that works, and protection that does not
 
-Among swaps with phi above 0.3:
+Among swaps with phi above 0.3 unless stated:
 
 - **A Jito tip protects:** 8 victims per mille with a tip, 38 without.
-- **The `jitodontfront` flag barely does:** 20.5 vs 22.6 per mille, which
-  fits attacks that span slots and so never meet the bundle rule.
-- **Routing protects:** routed buys are taken at 2.2 to 2.6%, direct buys at
-  8.1%.
+- **The `jitodontfront` flag barely does:** 20.5 vs 22.6 per mille over all
+  swaps, which fits attacks that span slots and so never meet the bundle rule.
+- **Routing protects:** among optimal targets, buys routed through Jupiter
+  and two other routers are taken at 2.2 to 2.6%, direct buys at 8.1%.
 - **Speed does not:** a high priority fee by itself does not protect; the
   most-hit band (100k to 1M micro-lamports per CU) is the trading-app default.
 
@@ -377,7 +379,8 @@ Among swaps with phi above 0.3:
   positive above a race win rate of about 0.6, and that rate is unobservable.
   This is a finding, not a strategy: Solana has no public mempool and Jito
   filters sandwiches, so the edge sits with privileged infrastructure.
-- **Large buys.** Buys above about 9.9 SOL are almost never taken (0.7%),
+- **Large buys.** Optimal targets above about 9.9 SOL are almost never taken
+  (0.7%),
   so the largest MESP is systematically left on the table. A per-transaction
   MESP overstates them.
 - **Flow attacks.** The median PumpSwap sandwich has 2 victims and 3.1 SOL of
