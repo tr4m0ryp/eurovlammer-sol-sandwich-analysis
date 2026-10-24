@@ -30,6 +30,8 @@ async def main(cfg: dict) -> None:
     scorer, lab, hub = Scorer(ROOT / cfg["model"]["path"]), Labeler(ROOT / cfg["model"]["bots"]), Hub()
     store = Store(ROOT / cfg["run"]["out_dir"] / run_id, {"run_id": run_id, "model": scorer.meta})
     rpc_url = os.environ.get("ALCHEMY_RPC_URL", "") or os.environ.get("HELIUS_RPC_URL", "")
+    if not rpc_url:     # the token-safety gate needs an account-reading RPC; fail before the loop starts
+        raise RuntimeError("set ALCHEMY_RPC_URL or HELIUS_RPC_URL (read-only RPC, see .env.example)")
     pipe = Pipeline(scorer, lab, hub, store, rpc_url)
     runner = await serve(hub, cfg["run"]["host"], cfg["run"]["port"])
     print(f"{run_id}: http://{cfg['run']['host']}:{cfg['run']['port']}", flush=True)
