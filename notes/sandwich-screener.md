@@ -9,7 +9,7 @@ to fast scalpers paying high priority fees. Page in the trenches / Avelero style
 Non-goals: no trading, signing or submitting (read-only on chain).
 
 ## Vision Updates
-- 2026-10-14: AWS account trenches (AWS_ACCOUNT_ID) is in scope for this project; use it for bulk pulls.
+- 2026-10-14: the project AWS account is in scope for this project; use it for bulk pulls.
 - 2026-10-14: overnight collection of **risk** swaps = theoretically sandwichable (slack-capped MESP above
   the attacker's two-transaction gas), each with sandwich gain (SOL, % of trade, return on front-run),
   a top-10%-gain label and the real sandwiched tag. Run unattended (cron watchdog), export in the morning.
