@@ -26,7 +26,8 @@ PARTS = {"flags": ("flags", 120), "sandwiches": ("sandwiches", 50), "risk": ("ri
 
 # Shared passcode gate. The passcode never leaves the server; a successful login sets an opaque
 # ``AUTH_COOKIE`` session cookie that the page, the snapshot and the SSE stream all present.
-PASSCODE = os.environ.get("TSOL_PASSCODE", "REDACTED_PASSCODE")
+# Without ``TSOL_PASSCODE`` a one-off passcode is generated and printed once at startup.
+PASSCODE = os.environ.get("TSOL_PASSCODE") or secrets.token_urlsafe(9)
 AUTH_COOKIE = "tsol_auth"
 LOGIN_HTML = """<!doctype html>
 <html lang="en">
@@ -160,4 +161,6 @@ async def serve(hub: Hub, host: str, port: int) -> web.AppRunner:
     runner = web.AppRunner(app(hub))
     await runner.setup()
     await web.TCPSite(runner, host, port).start()
+    if "TSOL_PASSCODE" not in os.environ:
+        print(f"dashboard passcode: {PASSCODE}", flush=True)
     return runner

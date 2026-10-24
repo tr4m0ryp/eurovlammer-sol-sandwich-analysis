@@ -77,7 +77,7 @@ do not include the geyser stream).
   validator set each slot. There are EU hubs (Frankfurt, Amsterdam, Ireland) but no fixed closest point.
 - **Amsterdam vs Frankfurt ≈ 360 km apart ⇒ ~5–7 ms RTT** — below the noise floor of a ~400 ms slot and
   irrelevant for a sandwich bot. Both are equivalent for this workload.
-- This box (`REDACTED_IP`, Scaleway **Paris**) already measures ~11 ms connect to
+- This box (Scaleway **Paris**) already measures ~11 ms connect to
   `api.mainnet-beta.solana.com` and ~20 ms to the Jito block engine.
 - **Conclusion:** use the free Oracle tier (Amsterdam) — there is no measurable edge from paying for
   Frankfurt colo. The real latency lever is the ingest type (#1), not the city.

@@ -1,7 +1,7 @@
 # Helius: account, plan, streaming products, credit burn
 
 Researched 2026-10-15. Every factual claim carries its source. Keys are referenced by prefix
-only (`REDACTED_KEY_A-…`, `REDACTED_KEY_B-…`); the full values live in the environment, never here.
+only (key A, key B); the full values live in the environment, never here.
 
 ## Headline
 
@@ -15,8 +15,8 @@ cannot help ([Helius billing FAQ](https://www.helius.dev/docs/de/faqs/billing)).
 
 | Endpoint | Key | Observed 2026-10-15 |
 |---|---|---|
-| `https://mainnet.helius-rpc.com/?api-key=…` | `REDACTED_KEY_A-…` | 3 of 15 burst calls returned 200, the rest 429; afterwards every call `max usage reached` |
-| `https://beta.helius-rpc.com/?api-key=…` | `REDACTED_KEY_B-…` | `max usage reached`, HTTP 429 |
+| `https://mainnet.helius-rpc.com/?api-key=…` | key A | 3 of 15 burst calls returned 200, the rest 429; afterwards every call `max usage reached` |
+| `https://beta.helius-rpc.com/?api-key=…` | key B | `max usage reached`, HTTP 429 |
 
 Both keys hit the ceiling at the same moment, so they bill against **one account**, not two.
 
