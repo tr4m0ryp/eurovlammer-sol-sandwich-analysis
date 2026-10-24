@@ -6,3 +6,5 @@ __pycache__/
 *.pyc
 .env
 .playwright-mcp/
+.pytest_cache/
+.ruff_cache/
