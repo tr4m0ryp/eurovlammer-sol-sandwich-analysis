@@ -15,9 +15,10 @@ import orjson
 from aiohttp import web
 
 from sol_mev.app.dashboard.hub import Hub
+from sol_mev.config import DATA_DIR
 
 PAGE = Path(__file__).parent / "page"
-DOCS = Path(__file__).resolve().parents[2] / "data" / "artifact"
+DOCS = DATA_DIR / "artifact"
 DOC_ID = re.compile(r"(optimal|visibility|exposure)/(summary|rows_\d{3})")
 NO_CACHE = {"Cache-Control": "no-cache"}     # the page changes under a running screener; always revalidate
 PARTS = {"flags": ("flags", 120), "sandwiches": ("sandwiches", 50), "risk": ("risk", 120),
@@ -27,8 +28,6 @@ PARTS = {"flags": ("flags", 120), "sandwiches": ("sandwiches", 50), "risk": ("ri
 def _topics(req: web.Request, key: str) -> frozenset[str] | None:
     raw = req.query.get(key, "")
     return frozenset(t for t in raw.split(",") if t) or None
-
-
 
 
 def app(hub: Hub) -> web.Application:
