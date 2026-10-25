@@ -72,10 +72,19 @@ real attacks, and a model learns the selection. The pipeline measures all
 three, then checks the model against ground truth: sandwiches that actually
 landed, recognised across slots by the order of transactions on each pool.
 
-```
-confirmed blocks ─▶ onchain.decode ─▶ measure.exposure ─▶ measure.screen ─▶ strategy
-                    (pump.fun, PumpSwap) (slack, MESP, phi)  (score, flag)     (simulated allocation)
-                 └▶ measure.sandwich (cross-slot detector, 14 slots behind) ─▶ settled ground truth
+```mermaid
+flowchart LR
+    B[("confirmed blocks<br/>JSON-RPC, slot order")]
+    D["onchain.decode<br/>pump.fun + PumpSwap swaps,<br/>fees, tips, limits"]
+    E["measure.exposure<br/>slack, MESP, phi"]
+    S["measure.screen<br/>LightGBM score, flag"]
+    A["strategy<br/>simulated allocation"]
+    L["measure.sandwich<br/>cross-slot detector,<br/>14 slots behind"]
+    G[["settled ground truth<br/>victim or clean"]]
+    B --> D --> E --> S --> A
+    D --> L --> G
+    G -. grades every flag .-> S
+    G -. settles every position .-> A
 ```
 
 <picture>
