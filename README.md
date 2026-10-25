@@ -2,9 +2,8 @@
 
 ## Why this exists
 
-This is the measurement instrument behind my bachelor thesis (Computer
-Science) on market microstructure and liquidity on Solana's memecoin venues:
-the pump.fun bonding curve and the PumpSwap AMM.
+This is a measurement instrument for market microstructure and liquidity on
+Solana's memecoin venues: the pump.fun bonding curve and the PumpSwap AMM.
 
 **It is for analysis only.** It reads confirmed, public blocks. It computes
 how exposed each swap is to a sandwich attack, labels the attacks that really
