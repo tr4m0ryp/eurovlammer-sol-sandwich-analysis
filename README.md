@@ -402,7 +402,7 @@ Collected data under `data/` is not versioned; the pipeline regenerates it.
 sol_mev/        onchain/ (node, decode), measure/ (exposure, sandwich, screen),
                 strategy/ (simulated allocator), app/ (live, dashboard, store)
 scripts/        research/, finetune/, figures/, ops/, checks/
-docs/           research/ (findings, framework, reports), build/ (infrastructure, prompts)
+docs/           research/figures/ (README figures), build/infrastructure/ (RPC, latency)
 ```
 
 ## Scope and ethics

@@ -16,7 +16,7 @@ import statistics
 from scripts.finetune import sweep
 from scripts.finetune.backtest import build_replay, load_strict, run, run_expected, split_replay
 from scripts.finetune.sweep import REFERENCE
-from sol_mev.config import REPO, ROOT
+from sol_mev.config import DATA_DIR, REPO, ROOT
 
 OUT = ROOT / "data" / "exports" / "finetune"
 REPORT = DATA_DIR / "exports" / "finetune" / "report.md"
