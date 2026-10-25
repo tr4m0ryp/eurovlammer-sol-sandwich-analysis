@@ -369,32 +369,6 @@ Among swaps with phi above 0.3 unless stated:
 - **Speed does not:** a high priority fee by itself does not protect; the
   most-hit band (100k to 1M micro-lamports per CU) is the trading-app default.
 
-## Where it fails
-
-- **The allocator has no measured edge.** Tuned on the first 80% of a 5.6 h
-  window, the best configuration makes +0.40 ± 0.25 SOL over 88 commits; on
-  the held-out 20% it commits 9 times and makes -0.002 SOL. The train result
-  is carried by a few rare large targets. Expected profit only turns clearly
-  positive above a race win rate of about 0.6, and that rate is unobservable.
-  This is a finding, not a strategy: Solana has no public mempool and Jito
-  filters sandwiches, so the edge sits with privileged infrastructure.
-- **Large buys.** Optimal targets above about 9.9 SOL are almost never taken
-  (0.7%),
-  so the largest MESP is systematically left on the table. A per-transaction
-  MESP overstates them.
-- **Flow attacks.** The median PumpSwap sandwich has 2 victims and 3.1 SOL of
-  victim flow on a 95 SOL pool. Per-transaction MESP underestimates exposure
-  in a burst, because the attacker front-runs the burst.
-- **Detection gaps.** Evasive sandwiches that link legs through token
-  transfers between wallets are not detected yet, and fee-exempt pump curves
-  form a separate regime where phi explodes.
-- **One day.** The model is trained and tested on one 216,000-slot pull (13.0 h of block time). A second,
-  independent day is the test that would make the numbers a result.
-
-The full findings ledger is `docs/research/findings.md`; the allocator's
-derivation is `docs/research/allocation-framework.md` and its tuning is
-`docs/research/finetune-report.md`.
-
 ## Running it
 
 Python 3.12 and a read-only Solana RPC endpoint.
