@@ -1,9 +1,12 @@
 # trenches-sol: Who Gets Sandwiched on Solana
 
-> **Dropped.** Solana has no public mempool, so a sandwich here has to be
-> predicted from confirmed blocks and raced through paid pre-confirmation
-> streams whose cost outran what the trades would return. What is left is the
-> measurement: who gets sandwiched, by how much, and why.
+> **Dropped.** Solana has no public mempool: transactions go straight to the
+> upcoming leader, and Jito closed its mempool stream in March 2024, the last
+> free view of pending swaps, specifically to stop sandwiching. Since then a
+> front-run has to be predicted from confirmed blocks and raced through paid
+> Geyser/gRPC and preconfirmation streams, and that data costs more than the
+> trades it would enable return. What is left is the measurement: who gets
+> sandwiched, by how much, and why.
 
 ## What this actually was
 
@@ -302,7 +305,7 @@ happened? For a strict row with score $`p`$, return $`\rho = \text{MESP}_B / D^*
 and $`\nu`$ strict hits on the same pool in the last 300 slots:
 
 ```math
-q = \min\!\big(\operatorname{clip}(p, 0.02, 0.9)\,(1 + 0.1\min(\nu, 5)),\ 0.95\big)
+q = \min\!\big(\mathrm{clip}(p, 0.02, 0.9)\,(1 + 0.1\min(\nu, 5)),\ 0.95\big)
 ```
 
 ```math
