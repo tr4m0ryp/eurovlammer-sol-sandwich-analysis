@@ -1,5 +1,9 @@
 # trenches-sol: Who Gets Sandwiched on Solana
 
+<p align="center">
+  <a href="https://x.com/tr4m0ryp"><img alt="Follow on X" src="https://img.shields.io/badge/X-@tr4m0ryp-000000?logo=x&logoColor=white"></a>
+</p>
+
 > **Dropped.** Solana has no public mempool: transactions go straight to the
 > upcoming leader, and Jito closed its mempool stream in March 2024, the last
 > free view of pending swaps, specifically to stop sandwiching. Since then a
