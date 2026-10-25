@@ -1,28 +1,58 @@
 # trenches-sol: Who Gets Sandwiched on Solana
 
-## Why this exists
+> **Dropped.** Solana has no public mempool, so a sandwich here has to be
+> predicted from confirmed blocks and raced through paid pre-confirmation
+> streams whose cost outran what the trades would return. What is left is the
+> measurement: who gets sandwiched, by how much, and why.
 
-This is a measurement instrument for market microstructure and liquidity on
-Solana's memecoin venues: the pump.fun bonding curve and the PumpSwap AMM.
+## What this actually was
 
-**It is for analysis only.** It reads confirmed, public blocks. It computes
-how exposed each swap is to a sandwich attack, labels the attacks that really
-happened, and models which swaps attackers choose. It holds no keys and
-contains no code that signs, builds or submits a transaction. Every "profit",
-"commit" or "wallet" number on this page is a **simulation** settled against
-observed attacks. It exists to quantify the phenomenon, not to perform it.
+This project started as an attempt to build a **high-frequency trading strategy**,
+not a research paper. The idea was simple: see a victim's buy on a memecoin
+pool before it lands, buy just ahead of it, and sell straight back into the
+price the victim's own trade just moved. We were trying to build something that
+made money, and we called it that. The predecessor,
+[`tr4m0ryp/trenches-live`](https://github.com/tr4m0ryp/trenches-live), carried
+an execution package for exactly that.
+
+The idea did **not** work on Solana, and not for lack of trying. Transactions
+are forwarded straight to the upcoming leader, Jito shut its mempool stream
+down in March 2024 specifically to stop these attacks, and the paid
+Geyser/gRPC and preconfirmation streams that remain cost far more than the
+edge they would buy. So the front-running side moved to Ethereum, which has a
+public mempool, in
+[`tr4m0ryp/eurovlammer-eth-sandwich-analysis`](https://github.com/tr4m0ryp/eurovlammer-eth-sandwich-analysis),
+and this repository kept the part that does work on Solana: reading confirmed,
+public blocks and measuring the attacks that really happen.
+
+That measurement turned out to be the interesting result. On 7.4 million swaps
+from one day, the swaps with the most extractable value are **not** the ones
+that get sandwiched; attackers select on fee-normalised impact, on flow and on
+visibility, and a model trained on the real attacks predicts their picks with
+an AUC of 0.970. What stopped us from going further is the same conclusion as
+on Ethereum: what we were building is **sandwiching**, it extracts value from
+ordinary traders, and it is not something we want to run or recommend.
+
+Every command here is **analysis only**. The execution package was removed on
+purpose, and removed from the git history: the repository holds no keys and no
+code that signs, builds or submits a transaction. Every "profit", "commit" or
+"wallet" number on this page is a **simulation** settled against observed
+attacks. It exists to quantify the phenomenon, not to perform it.
 
 ## The idea
 
-A **sandwich** is front-running on an AMM. An attacker sees a victim's buy,
-buys first to push the price up, lets the victim buy at the worse price, then
-sells into the move. The victim's own slippage limit is the only thing that
-caps the damage.
+A trader swapping on pump.fun or PumpSwap signs a **slippage limit**: the least
+they will accept, or the most they will pay. A sandwich attacker buys just
+ahead of the victim to push the price up, lets the victim buy at the worse
+price, then sells straight back. The attacker's take is bounded by that limit:
+push too hard and the victim's transaction fails, and the attacker is left
+holding the position.
 
-The textbook question is "how much could be extracted from this swap?" That
-turns out to be the wrong question. On 7.4 million swaps from one day, the
-swaps with the most extractable value are **not** the ones that get
-sandwiched most. Attackers select on three things instead:
+On Solana the attacker cannot see the swap before it lands, so the limit is
+only half the story. The textbook question, "how much could be extracted from
+this swap?", turns out to be the wrong one: on 7.4 million swaps from one day,
+the swaps with the most extractable value are **not** the ones that get
+sandwiched most. Three things decide whether a swap is really a target:
 
 1. **Fee-normalised impact.** A swap only pays for a sandwich if the price
    move it causes beats the fee the attacker pays twice, once per leg. One
@@ -35,7 +65,15 @@ sandwiched most. Attackers select on three things instead:
    inventory.
 
 So instead of hand-writing a rule for "interesting", the labels come from the
-real attacks, and a model learns the selection.
+real attacks, and a model learns the selection. The pipeline measures all
+three, then checks the model against ground truth: sandwiches that actually
+landed, recognised across slots by the order of transactions on each pool.
+
+```
+confirmed blocks ─▶ onchain.decode ─▶ measure.exposure ─▶ measure.screen ─▶ strategy
+                    (pump.fun, PumpSwap) (slack, MESP, phi)  (score, flag)     (simulated allocation)
+                 └▶ measure.sandwich (cross-slot detector, 14 slots behind) ─▶ settled ground truth
+```
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/research/figures/readme/phi-dark.png">
