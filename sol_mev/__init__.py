@@ -1,4 +1,4 @@
-"""trenches-sol: read-only measurement of sandwich exposure on pump.fun and PumpSwap (thesis research).
+"""trenches-sol: read-only measurement of sandwich exposure on pump.fun and PumpSwap (research).
 
   onchain   confirmed-block follower and swap decoding
   measure   exposure maths, sandwich detection, the victim-selection screen
