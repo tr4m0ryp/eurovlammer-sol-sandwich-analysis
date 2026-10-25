@@ -391,16 +391,6 @@ Among swaps with phi above 0.3 unless stated:
 - **One day.** The model is trained and tested on one 216,000-slot pull (13.0 h of block time). A second,
   independent day is the test that would make the numbers a result.
 
-## What is left to finish
-
-1. **Aggregate-flow MESP:** the front-run size that is optimal against the
-   expected flow of a burst, as a feature next to phi.
-2. **A second held-out day**, to show the selection model transfers.
-3. **Recalibrate the top score bins** (isotonic on $`\hat p`$), since scores
-   above 0.15 run about 20% hot.
-4. **Evasive-sandwich detection** through transfer-linked wallets, and the
-   leader effect in the current validator set.
-
 The full findings ledger is `docs/research/findings.md`; the allocator's
 derivation is `docs/research/allocation-framework.md` and its tuning is
 `docs/research/finetune-report.md`.
